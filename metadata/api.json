@@ -1,0 +1,16 @@
+一、创建补货入库单
+message api：ocr-pointofsale.allotinv.create
+rest api: ocr-pointofsale/allotinv/create, http: POST
+input:
+补货入库单VO
+output: 
+成功
+{
+   "message":"ok"
+}
+失败
+{
+   "failure":"100",
+   "message":""
+}
+

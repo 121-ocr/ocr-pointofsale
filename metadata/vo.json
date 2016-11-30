@@ -1,19 +1,17 @@
-补货入库单
+一、补货入库单
 {
     "bo_id": "ALLOT201611190001",//单据号
     "supply_date": "2016/11/15",  //补货日期
     "send_date": "2016/11/21",  //发货日期
-    "confirm_date": "2016/11/25",  //确认日期
-	"channel": {  //门店
-	    "code": "N0001",
-    	"name": "海淀分店"
-	},	
+    "confirm_date": "2016/11/25",  //入库日期	
+    "is_completed": "true", //是否完成
 	"restocking_warehouse": {//补货仓库
    		"code": "WH001",
    		"name": "北京总仓",   
    		"type": "1",
    		"character": "2",
    		"owner_org": {
+   			"account": "",
    			"code": "ORG001",
    			"name": "卡洛公司"
    		},
@@ -37,8 +35,8 @@
     },
     "note":"",//备注
     "operator":"",//操作员    
-    "replenishment_id":"",//补货单号
-    "request_id":"",//要货单号
+    "replenishment_code":"",//补货单号
+    "request_code":"",//要货单号
     //表体
     "detail": [
         {

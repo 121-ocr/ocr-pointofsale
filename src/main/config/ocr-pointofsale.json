@@ -2,7 +2,7 @@
 	"main": "ocr.pointofsale.App",
 	"options": {
 		"config": {
-			"version_id": 6,
+			"version_id": 8,
 			"service_name": "ocr-pointofsale",
 			"app_inst_scope": ["1~1000"],
 			"app_desc": "门店系统",
@@ -31,7 +31,7 @@
 			"app_datasource": {
 				"data_sharding_policy": "sharding",
 				"config": {
-					"db_name": "MyTest",
+					"db_name": "121ocr",
 					"connection_string": "mongodb://127.0.0.1:27017"
 				},
 				"sharedpool": "mongo-factor"
