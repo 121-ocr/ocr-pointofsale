@@ -10,7 +10,7 @@ output:
 }
 失败
 {
-   "failure":"100",
+   "failureCode":"100",
    "message":""
 }
 
