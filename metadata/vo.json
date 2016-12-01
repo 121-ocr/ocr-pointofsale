@@ -42,7 +42,7 @@
         {
         	"detail_code": "ALLOT201611190001001", //行号
         	"goods": { //商品信息
-        		"account_id": "Kano"
+        		"account_id": "Kano",
             	"product_sku_code": "WINE001SP0001SP0002",
             	"title": "科特勒2014 干红葡萄酒750ml",
             	"sales_catelogs": [{
@@ -205,7 +205,6 @@
         				"currency_type": "USD",
         				"money": 720.00
         			}
-        		}
         	},
         	"note":""//备注 
         }
@@ -352,7 +351,7 @@
         				"currency_type": "USD",
         				"money": 720.00
         			}
-        		}
+        		},
         	},
         	"note":""//备注 
         }
