@@ -1,6 +1,7 @@
-package ocr.pointofsale.allotinv;
+package ocr.pointofsale.saleorder;
 
 import io.vertx.core.http.HttpMethod;
+import ocr.pointofsale.base.POSBaseHandler;
 import otocloud.common.ActionURI;
 import otocloud.framework.app.function.ActionDescriptor;
 import otocloud.framework.app.function.AppActivityImpl;
@@ -9,47 +10,47 @@ import otocloud.framework.app.function.BizStateSwitchDesc;
 import otocloud.framework.core.HandlerDescriptor;
 
 /**
- * 补货调拨入库单创建操作
- * 
+ * 零售单删除
  * @author wanghw
  *
  */
-public class AllotInvCreatHandler extends AllotInvBaseHandler{
+public class SaleOrderRemoveHandler extends POSBaseHandler{
+	
+	public static final String ADDRESS = "remove";
 
-	public static final String ADDRESS = "creat";
-
-	public AllotInvCreatHandler(AppActivityImpl appActivity) {
+	public SaleOrderRemoveHandler(AppActivityImpl appActivity) {
 		super(appActivity);
 		// TODO Auto-generated constructor stub
 	}
 
-	/**
-	 * corecorp_setting.setting
-	 */
+	//此action的入口地址
 	@Override
 	public String getEventAddress() {
+		// TODO Auto-generated method stub
 		return ADDRESS;
-	}
+	}	
 
 	/**
-	 * {@inheritDoc}
+	 * 此action的自描述元数据
 	 */
 	@Override
-	public ActionDescriptor getActionDesc() {
-
+	public ActionDescriptor getActionDesc() {		
+		
 		ActionDescriptor actionDescriptor = super.getActionDesc();
 		HandlerDescriptor handlerDescriptor = actionDescriptor.getHandlerDescriptor();
 
-		// 外部访问url定义
-		ActionURI uri = new ActionURI("create", HttpMethod.POST);
+				
+		ActionURI uri = new ActionURI(ADDRESS, HttpMethod.DELETE);
 		handlerDescriptor.setRestApiURI(uri);
-
-		// 状态变化定义
-		BizStateSwitchDesc bizStateSwitchDesc = new BizStateSwitchDesc(BizRootType.BIZ_OBJECT, null, "created");
-		bizStateSwitchDesc.setWebExpose(true); // 是否向web端发布事件
+		
+		//状态变化定义
+		BizStateSwitchDesc bizStateSwitchDesc = new BizStateSwitchDesc(BizRootType.BIZ_OBJECT, 
+				"created", "deleted");
+		bizStateSwitchDesc.setWebExpose(true); //是否向web端发布事件		
 		actionDescriptor.setBizStateSwitch(bizStateSwitchDesc);
-
+		
 		return actionDescriptor;
 	}
-
+	
+	
 }

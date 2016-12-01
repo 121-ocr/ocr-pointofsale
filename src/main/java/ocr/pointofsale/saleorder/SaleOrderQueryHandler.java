@@ -1,19 +1,19 @@
-package ocr.pointofsale.allotinv;
+package ocr.pointofsale.saleorder;
 
 import ocr.pointofsale.base.POSBaseQueryHandler;
 import otocloud.framework.app.function.AppActivityImpl;
 
 /**
- * 查询补货入库单
+ * 查询零售单
  * 
  * @author wanghw
  *
  */
-public class AllotInvQueryHandler extends POSBaseQueryHandler {
+public class SaleOrderQueryHandler extends POSBaseQueryHandler {
 
-	public static final String ADDRESS = "getAllotInv";
+	public static final String ADDRESS = "getSaleOrder";
 
-	public AllotInvQueryHandler(AppActivityImpl appActivity) {
+	public SaleOrderQueryHandler(AppActivityImpl appActivity) {
 		super(appActivity);
 		// TODO Auto-generated constructor stub
 	}

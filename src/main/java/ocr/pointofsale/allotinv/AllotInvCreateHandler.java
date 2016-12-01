@@ -11,25 +11,27 @@ import otocloud.framework.app.function.BizStateSwitchDesc;
 import otocloud.framework.core.HandlerDescriptor;
 
 /**
- * 补货入库单删除
- * @author pcitc
+ * 补货调拨入库单创建操作
+ * 
+ * @author wanghw
  *
  */
-public class AllotInvRemoveHandler extends POSBaseHandler{
-	
-	public static final String ADDRESS = "remove";
+public class AllotInvCreateHandler extends POSBaseHandler{
 
-	public AllotInvRemoveHandler(AppActivityImpl appActivity) {
+	public static final String ADDRESS = "create";
+
+	public AllotInvCreateHandler(AppActivityImpl appActivity) {
 		super(appActivity);
 		// TODO Auto-generated constructor stub
 	}
 
-	//此action的入口地址
+	/**
+	 * corecorp_setting.setting
+	 */
 	@Override
 	public String getEventAddress() {
-		// TODO Auto-generated method stub
 		return ADDRESS;
-	}	
+	}
 
 	public String getPartnerAcct(JsonObject bo) {
 		String partnerAcct = bo.getJsonObject("restocking_warehouse").getJsonObject("owner_org").getString("account"); 
@@ -37,26 +39,24 @@ public class AllotInvRemoveHandler extends POSBaseHandler{
 	}	
 	
 	/**
-	 * 此action的自描述元数据
+	 * {@inheritDoc}
 	 */
 	@Override
-	public ActionDescriptor getActionDesc() {		
-		
+	public ActionDescriptor getActionDesc() {
+
 		ActionDescriptor actionDescriptor = super.getActionDesc();
 		HandlerDescriptor handlerDescriptor = actionDescriptor.getHandlerDescriptor();
 
-				
-		ActionURI uri = new ActionURI(ADDRESS, HttpMethod.DELETE);
+		// 外部访问url定义
+		ActionURI uri = new ActionURI("create", HttpMethod.POST);
 		handlerDescriptor.setRestApiURI(uri);
-		
-		//状态变化定义
-		BizStateSwitchDesc bizStateSwitchDesc = new BizStateSwitchDesc(BizRootType.BIZ_OBJECT, 
-				"created", "deleted");
-		bizStateSwitchDesc.setWebExpose(true); //是否向web端发布事件		
+
+		// 状态变化定义
+		BizStateSwitchDesc bizStateSwitchDesc = new BizStateSwitchDesc(BizRootType.BIZ_OBJECT, null, "created");
+		bizStateSwitchDesc.setWebExpose(true); // 是否向web端发布事件
 		actionDescriptor.setBizStateSwitch(bizStateSwitchDesc);
-		
+
 		return actionDescriptor;
 	}
-	
-	
+
 }

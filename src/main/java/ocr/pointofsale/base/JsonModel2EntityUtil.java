@@ -1,4 +1,4 @@
-package ocr.pointofsale.allotinv;
+package ocr.pointofsale.base;
 
 import java.util.ArrayList;
 import java.util.HashMap;

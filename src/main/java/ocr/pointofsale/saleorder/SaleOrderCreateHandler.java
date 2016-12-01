@@ -1,29 +1,25 @@
-package ocr.pointofsale.allotinv;
-
-import java.util.ArrayList;
-import java.util.List;
+package ocr.pointofsale.saleorder;
 
 import io.vertx.core.http.HttpMethod;
-import io.vertx.core.json.JsonObject;
 import ocr.pointofsale.base.POSBaseHandler;
 import otocloud.common.ActionURI;
 import otocloud.framework.app.function.ActionDescriptor;
 import otocloud.framework.app.function.AppActivityImpl;
 import otocloud.framework.app.function.BizRootType;
 import otocloud.framework.app.function.BizStateSwitchDesc;
-import otocloud.framework.core.ApiParameterDescriptor;
 import otocloud.framework.core.HandlerDescriptor;
 
 /**
- * 补货调拨入库单确认操作
+ * 零售单创建操作
+ * 
  * @author wanghw
  *
  */
-public class AllotInvConfirmHandler extends POSBaseHandler{
+public class SaleOrderCreateHandler extends POSBaseHandler{
 
-	public static final String ADDRESS = "confirm";
+	public static final String ADDRESS = "create";
 
-	public AllotInvConfirmHandler(AppActivityImpl appActivity) {
+	public SaleOrderCreateHandler(AppActivityImpl appActivity) {
 		super(appActivity);
 		// TODO Auto-generated constructor stub
 	}
@@ -36,10 +32,6 @@ public class AllotInvConfirmHandler extends POSBaseHandler{
 		return ADDRESS;
 	}
 	
-	public String getPartnerAcct(JsonObject bo) {
-		String partnerAcct = bo.getJsonObject("restocking_warehouse").getJsonObject("owner_org").getString("account"); 
-		return partnerAcct;
-	}	
 
 	/**
 	 * {@inheritDoc}
@@ -50,17 +42,12 @@ public class AllotInvConfirmHandler extends POSBaseHandler{
 		ActionDescriptor actionDescriptor = super.getActionDesc();
 		HandlerDescriptor handlerDescriptor = actionDescriptor.getHandlerDescriptor();
 
-		// 参数：可以在url、表单、http-HEAD传递参数
-		List<ApiParameterDescriptor> paramsDesc = new ArrayList<ApiParameterDescriptor>();
-		paramsDesc.add(new ApiParameterDescriptor("bo_id", ""));
-		actionDescriptor.getHandlerDescriptor().setParamsDesc(paramsDesc);
-
 		// 外部访问url定义
-		ActionURI uri = new ActionURI("confirm", HttpMethod.PUT);
+		ActionURI uri = new ActionURI("create", HttpMethod.POST);
 		handlerDescriptor.setRestApiURI(uri);
 
 		// 状态变化定义
-		BizStateSwitchDesc bizStateSwitchDesc = new BizStateSwitchDesc(BizRootType.BIZ_OBJECT, "created", "created");
+		BizStateSwitchDesc bizStateSwitchDesc = new BizStateSwitchDesc(BizRootType.BIZ_OBJECT, null, "created");
 		bizStateSwitchDesc.setWebExpose(true); // 是否向web端发布事件
 		actionDescriptor.setBizStateSwitch(bizStateSwitchDesc);
 

@@ -1,4 +1,4 @@
-package ocr.pointofsale.inventory;
+package ocr.pointofsale.saleorder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,24 +9,24 @@ import otocloud.framework.core.OtoCloudEventDescriptor;
 import otocloud.framework.core.OtoCloudEventHandlerRegistry;
 
 /**
- * 补货调拨入库单组件
+ * 零售单组件
  * @author wanghw
  *
  */
-public class InventoryComponent extends AppActivityImpl {
+public class SaleOrderComponent extends AppActivityImpl {
 
 	//业务活动组件名
 	@Override
 	public String getName() {
 		// TODO Auto-generated method stub
-		return "inventory";
+		return "saleorder";
 	}
 	
 	//业务活动组件要处理的核心业务对象
 	@Override
 	public String getBizObjectType() {
 		// TODO Auto-generated method stub
-		return "bp_invnum";
+		return "bp_saleorder";
 	}
 
 	//发布此业务活动关联的业务角色
@@ -54,8 +54,8 @@ public class InventoryComponent extends AppActivityImpl {
 		// TODO Auto-generated method stub
 		List<OtoCloudEventHandlerRegistry> ret = new ArrayList<OtoCloudEventHandlerRegistry>();
 
-		InventoryModifyHandler inventoryModifyHandler = new InventoryModifyHandler(this);
-		ret.add(inventoryModifyHandler);
+		SaleOrderCreateHandler saleOrderCreateHandler = new SaleOrderCreateHandler(this);
+		ret.add(saleOrderCreateHandler);
 		
 		return ret;
 	}
