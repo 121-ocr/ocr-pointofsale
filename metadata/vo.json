@@ -84,7 +84,7 @@
         	"shelf_life_unit":"",//保质期单位
         	"quantity_should": 60,//应收数量
         	"quantity_fact": 60,//实收数量
-        	"quantity_reject": 60,//不合格数量
+        	"quantity_reject": 60,//退回数量
         	//供货价
         	"supply_price": {
         		"tax_type": "VTA",  //税类

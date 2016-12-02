@@ -38,7 +38,7 @@ public class POSBaseHandler extends ActionHandlerImpl<JsonObject> {
 		// 自动查找数据源，自动进行分表处理
 		this.recordFactData(appActivity.getBizObjectType(), bo, boId, actor, partnerAcct, null, result -> {
 			if (result.succeeded()) {
-				msg.reply("ok");
+				msg.reply(bo); //返回BO
 			} else {
 				Throwable errThrowable = result.cause();
 				String errMsgString = errThrowable.getMessage();

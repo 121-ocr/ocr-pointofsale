@@ -40,7 +40,7 @@ public class SaleOrderRemoveHandler extends POSBaseHandler{
 		HandlerDescriptor handlerDescriptor = actionDescriptor.getHandlerDescriptor();
 
 				
-		ActionURI uri = new ActionURI(ADDRESS, HttpMethod.DELETE);
+		ActionURI uri = new ActionURI(ADDRESS, HttpMethod.POST);
 		handlerDescriptor.setRestApiURI(uri);
 		
 		//状态变化定义

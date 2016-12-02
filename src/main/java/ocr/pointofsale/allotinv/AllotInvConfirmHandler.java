@@ -50,13 +50,13 @@ public class AllotInvConfirmHandler extends POSBaseHandler{
 		ActionDescriptor actionDescriptor = super.getActionDesc();
 		HandlerDescriptor handlerDescriptor = actionDescriptor.getHandlerDescriptor();
 
-		// 参数：可以在url、表单、http-HEAD传递参数
-		List<ApiParameterDescriptor> paramsDesc = new ArrayList<ApiParameterDescriptor>();
-		paramsDesc.add(new ApiParameterDescriptor("bo_id", ""));
-		actionDescriptor.getHandlerDescriptor().setParamsDesc(paramsDesc);
+//		// 参数：可以在url、表单、http-HEAD传递参数
+//		List<ApiParameterDescriptor> paramsDesc = new ArrayList<ApiParameterDescriptor>();
+//		paramsDesc.add(new ApiParameterDescriptor("bo_id", ""));
+//		actionDescriptor.getHandlerDescriptor().setParamsDesc(paramsDesc);
 
 		// 外部访问url定义
-		ActionURI uri = new ActionURI("confirm", HttpMethod.PUT);
+		ActionURI uri = new ActionURI("confirm", HttpMethod.POST);
 		handlerDescriptor.setRestApiURI(uri);
 
 		// 状态变化定义

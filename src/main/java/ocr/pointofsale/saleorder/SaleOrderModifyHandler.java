@@ -43,7 +43,7 @@ public class SaleOrderModifyHandler extends POSBaseHandler{
 		HandlerDescriptor handlerDescriptor = actionDescriptor.getHandlerDescriptor();
 
 		// 外部访问url定义
-		ActionURI uri = new ActionURI("modify", HttpMethod.PUT);
+		ActionURI uri = new ActionURI("modify", HttpMethod.POST);
 		handlerDescriptor.setRestApiURI(uri);
 
 		// 状态变化定义
