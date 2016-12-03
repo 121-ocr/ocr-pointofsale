@@ -38,6 +38,8 @@ public class POSBaseHandler extends ActionHandlerImpl<JsonObject> {
 		// 自动查找数据源，自动进行分表处理
 		this.recordFactData(appActivity.getBizObjectType(), bo, boId, actor, partnerAcct, null, result -> {
 			if (result.succeeded()) {
+				//后续处理
+				afterProcess(bo);
 				msg.reply(bo); //返回BO
 			} else {
 				Throwable errThrowable = result.cause();
@@ -47,6 +49,13 @@ public class POSBaseHandler extends ActionHandlerImpl<JsonObject> {
 			}
 
 		});
+	}
+	/**
+	 * 单据保存后处理
+	 * @param bo
+	 */
+	private void afterProcess(JsonObject bo) {
+		
 	}
 
 	public String getPartnerAcct(JsonObject bo) {

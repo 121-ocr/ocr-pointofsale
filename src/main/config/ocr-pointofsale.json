@@ -16,7 +16,7 @@
 				"static_res_service": true
 			},
 			"api_register_server": {
-				//"webserver_name": "121webserver-N01"
+				"webserver_name": "121webserver-N01"
 			},
 			"sys_datasource": {
 				"config": {
@@ -42,6 +42,17 @@
 				"component_common": {
 				},
 				"component_config": {
+					"allotinv": {
+				      		"options": {
+		        				"config" :  {
+		        				    "dependencies":{
+			        					"inventorycenter_service": {
+			        						"service_name": "ocr-inventorycenter"
+			        					}
+		        					}
+								}
+							 }
+					   }
 				},
 				"component_deployment": []
 			},
