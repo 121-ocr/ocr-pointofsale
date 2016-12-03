@@ -1,7 +1,7 @@
 package ocr.pointofsale.saleorder;
 
 import io.vertx.core.http.HttpMethod;
-import ocr.pointofsale.base.POSBaseHandler;
+import ocr.common.handler.SampleBillBaseHandler;
 import otocloud.common.ActionURI;
 import otocloud.framework.app.function.ActionDescriptor;
 import otocloud.framework.app.function.AppActivityImpl;
@@ -14,7 +14,7 @@ import otocloud.framework.core.HandlerDescriptor;
  * @author wanghw
  *
  */
-public class SaleOrderRemoveHandler extends POSBaseHandler{
+public class SaleOrderRemoveHandler extends SampleBillBaseHandler{
 	
 	public static final String ADDRESS = "remove";
 

@@ -5,7 +5,7 @@ import java.util.List;
 
 import io.vertx.core.http.HttpMethod;
 import io.vertx.core.json.JsonObject;
-import ocr.pointofsale.base.POSBaseHandler;
+import ocr.common.handler.SampleBillBaseHandler;
 import otocloud.common.ActionURI;
 import otocloud.framework.app.function.ActionDescriptor;
 import otocloud.framework.app.function.AppActivityImpl;
@@ -19,7 +19,7 @@ import otocloud.framework.core.HandlerDescriptor;
  * @author wanghw
  *
  */
-public class AllotInvConfirmHandler extends POSBaseHandler{
+public class AllotInvConfirmHandler extends SampleBillBaseHandler{
 
 	public static final String ADDRESS = "confirm";
 

@@ -24,13 +24,7 @@
 		
 		<dependency>
 			<groupId>otocloud</groupId>
-			<artifactId>otocloud-common</artifactId>
-			<version>${project.version}</version>
-		</dependency>
-
-		<dependency>
-			<groupId>otocloud</groupId>
-			<artifactId>otocloud-framework</artifactId>
+			<artifactId>ocr-common</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 

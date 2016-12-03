@@ -1,6 +1,6 @@
 package ocr.pointofsale.saleorder;
 
-import ocr.pointofsale.base.POSBaseQueryHandler;
+import ocr.common.handler.SampleBillBaseQueryHandler;
 import otocloud.framework.app.function.AppActivityImpl;
 
 /**
@@ -9,7 +9,7 @@ import otocloud.framework.app.function.AppActivityImpl;
  * @author wanghw
  *
  */
-public class SaleOrderQueryHandler extends POSBaseQueryHandler {
+public class SaleOrderQueryHandler extends SampleBillBaseQueryHandler {
 
 	public static final String ADDRESS = "getSaleOrder";
 

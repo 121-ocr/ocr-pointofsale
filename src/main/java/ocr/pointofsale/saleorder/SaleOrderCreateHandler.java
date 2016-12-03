@@ -1,7 +1,7 @@
 package ocr.pointofsale.saleorder;
 
 import io.vertx.core.http.HttpMethod;
-import ocr.pointofsale.base.POSBaseHandler;
+import ocr.common.handler.SampleBillBaseHandler;
 import otocloud.common.ActionURI;
 import otocloud.framework.app.function.ActionDescriptor;
 import otocloud.framework.app.function.AppActivityImpl;
@@ -15,7 +15,7 @@ import otocloud.framework.core.HandlerDescriptor;
  * @author wanghw
  *
  */
-public class SaleOrderCreateHandler extends POSBaseHandler{
+public class SaleOrderCreateHandler extends SampleBillBaseHandler{
 
 	public static final String ADDRESS = "create";
 

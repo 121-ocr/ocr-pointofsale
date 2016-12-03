@@ -1,6 +1,6 @@
 package ocr.pointofsale.allotinv;
 
-import ocr.pointofsale.base.POSBaseQueryHandler;
+import ocr.common.handler.SampleBillBaseQueryHandler;
 import otocloud.framework.app.function.AppActivityImpl;
 
 /**
@@ -9,7 +9,7 @@ import otocloud.framework.app.function.AppActivityImpl;
  * @author wanghw
  *
  */
-public class AllotInvQueryHandler extends POSBaseQueryHandler {
+public class AllotInvQueryHandler extends SampleBillBaseQueryHandler {
 
 	public static final String ADDRESS = "getAllotInv";
 

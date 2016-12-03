@@ -2,7 +2,7 @@ package ocr.pointofsale.allotinv;
 
 import io.vertx.core.http.HttpMethod;
 import io.vertx.core.json.JsonObject;
-import ocr.pointofsale.base.POSBaseHandler;
+import ocr.common.handler.SampleBillBaseHandler;
 import otocloud.common.ActionURI;
 import otocloud.framework.app.function.ActionDescriptor;
 import otocloud.framework.app.function.AppActivityImpl;
@@ -15,7 +15,7 @@ import otocloud.framework.core.HandlerDescriptor;
  * @author pcitc
  *
  */
-public class AllotInvRemoveHandler extends POSBaseHandler{
+public class AllotInvRemoveHandler extends SampleBillBaseHandler{
 	
 	public static final String ADDRESS = "remove";
 
