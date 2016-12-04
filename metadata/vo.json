@@ -4,7 +4,6 @@
     "supply_date": "2016/11/15",  //补货日期
     "send_date": "2016/11/21",  //发货日期
     "confirm_date": "2016/11/25",  //入库日期	
-    "is_completed": "true", //是否完成
 	"restocking_warehouse": {//补货仓库
    		"code": "WH001",
    		"name": "北京总仓",   
@@ -213,7 +212,7 @@
 二、零售单
 {
     "bo_id": "SO201611190001",//单据号
-    "sale_date": "2016/11/15",  //制单日期
+    "sale_date": "2016/11/15",  //销售日期
 	"customer":{//客户
 		"member_code":"",//会员卡号
 		"type":"",//客户类型

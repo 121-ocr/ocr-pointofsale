@@ -57,6 +57,9 @@ public class SaleOrderComponent extends AppActivityImpl {
 		SaleOrderCreateHandler saleOrderCreateHandler = new SaleOrderCreateHandler(this);
 		ret.add(saleOrderCreateHandler);
 		
+		SaleOrderQueryHandler saleOrderQueryHandler = new SaleOrderQueryHandler(this);
+		ret.add(saleOrderQueryHandler);
+		
 		return ret;
 	}
 

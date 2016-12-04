@@ -1,204 +1,290 @@
 {
-    "bo_id": "ALLOT201611190001",
-    "supply_date": "2016/11/15", 
-    "send_date": "2016/11/21", 
-    "confirm_date": "2016/11/25",
-    "is_completed": "true",
-	"restocking_warehouse": {
-   		"code": "WH001",
-   		"name": "北京总仓",   
-   		"type": "1",
-   		"character": "2",
-   		"owner_org": {
-   			"account": "",
-   			"code": "ORG001",
-   			"name": "卡洛公司"
-   		},
-   		"vmi_org": {},
-   		"address": "北京市大兴区38号"
+	"bo_id": "ALLOT201611190001",
+	"supply_date": "2016/11/15",
+	"send_date": "2016/11/21",
+	"confirm_date": "2016/11/25",
+	"restocking_warehouse": 
+	{
+		"code": "WH001",
+		"name": "北京总仓",
+		"type": "1",
+		"character": "2",
+		"owner_org": 
+		{
+			"account": "",
+			"code": "ORG001",
+			"name": "卡洛公司"
+		},
+
+		"vmi_org": 
+		{
+			
+		},
+
+		"address": "北京市大兴区38号"
 	},
-    "warehouse":{
-    	"code": "WH002",
-   	"name": "海淀门店",   
-   	"type": "1",
-   	"character": "2",
-   	"owner_org": {
-   		"code": "ORG001",
-   		"name": "卡洛公司"
-   	},
-   	"vmi_org": {
-   		"code": "ORG002",
-   		"name": "海淀分店"
-   	},
-   	"address": "北京市大兴区38号"
-    },
-    "note":"",
-    "operator":"001",    
-    "replenishment_code":"002",
-    "request_code":"003",
-    "detail": [
-        {
-        	"detail_code": "ALLOT201611190001001",
-        	"goods": {
-        		"account_id": "Kano",
-            	        "product_sku_code": "WINE001SP0001SP0002",
-            	        "title": "科特勒2014 干红葡萄酒750ml",
-            	        "sales_catelogs": [{
-            		      "code": "WINE",
-            		      "name": "酒水"
-            	        }],
-            	        "product_sku": {
-	            	      "bar_code": "",
-	            	      "product_specifications": [
-	            	 	{
-	            	 		"specification_code": "SP0001",
-	            	 		"specification_name": "颜色",
-	            			"specification_value": "洋红"
-	            		},
-	            		{
-	            	 		"specification_code": "SP0002",
-	            	 		"specification_name": "容量",
-	            			"specification_value": "750ml"
-	            		}
-	            	],
-	            	"product_spu": {
-	            		"spu_code": "WINE001",
-	            		"base_unit": "瓶",
-	            		"brand": {
-	            			"code": "BR0001",
-	            			"name": "科特勒",
-	            			"manufacturer": {
-		            			"code": "BR0001",
-		            			"name": "法国科特勒酒庄"        			
-	            			}		            			
-	            		
-	            		},
-	            		"desc": ""		            	
-            		}
-            	}
-        	},
-        	"batch_code":"",
-        	"shelf_life":"",
-        	"shelf_life_unit":"",
-        	"quantity_should": 60,
-        	"quantity_fact": 60,
-        	"quantity_reject": 60,
-        	"supply_price": {
-        		"tax_type": "VTA",
-        		"tax_rate": 0.17,
-        		"price_including_tax": {
-        			"currency": {	
-        				"currency_type": "CYN",
-        				"price": 120.00
-        			},
-        			"original_currency":  {
-        				"currency_type": "USD",
-        				"price": 120.00
-        			}
-        		},
-        		"price": { 
-        			"currency": {
-        				"currency_type": "CYN",
-        				"price": 120.00
-        			},
-        			"original_currency":  {
-        				"currency_type": "USD",
-        				"price": 120.00
-        			}
-        		}
-        	},
-        	"supply_amount":{
-        		"money_including_tax": {
-        			"currency": {
-        				"currency_type": "CYN",
-        				"money": 720.00
-        			},
-        			"original_currency":  {
-        				"currency_type": "USD",
-        				"money": 720.00
-        			}
-        		},
-        		"money": {
-        			"currency": {
-        				"currency_type": "CYN",
-        				"money": 720.00
-        			},
-        			"original_currency":  {
-        				"currency_type": "USD",
-        				"money": 720.00
-        			}
-        		}
-        	},
-        	"retail_price": {
-        		"tax_type": "VTA",
-        		"tax_rate": 0.17,
-        		"price_including_tax": {
-        			"currency": {
-        				"currency_type": "CYN",
-        				"price": 120.00
-        			},
-        			"original_currency":  {
-        				"currency_type": "USD",
-        				"price": 120.00
-        			}
-        		},
-        		"price": {
-        			"currency": {
-        				"currency_type": "CYN",
-        				"price": 120.00
-        			},
-        			"original_currency":  {
-        				"currency_type": "USD",
-        				"price": 120.00
-        			}
-        		}
-        	},
-        	"retail_amount":{
-        		"money_including_tax": {
-        			"currency": {	
-        				"currency_type": "CYN",
-        				"money": 720.00
-        			},
-        			"original_currency":  {
-        				"currency_type": "USD",
-        				"money": 720.00
-        			}
-        		},
-        		"money": { 
-        			"currency": {
-        				"currency_type": "CYN",
-        				"money": 720.00
-        			},
-        			"original_currency":  {
-        				"currency_type": "USD",
-        				"money": 720.00
-        			}
-        		}
-        	},
-        	"commission": {
-        		"computation_rule": {},
-        		"commission_value": {  
-        			"currency": {	
-        				"currency_type": "CYN",
-        				"price": 120.00
-        			},
-        			"original_currency":  {
-        				"currency_type": "USD",
-        				"price": 120.00
-        			}
-        		}         	
-        	},
-        	"commission_amount":{
-	       			"currency": {
-        				"currency_type": "CYN",
-        				"money": 720.00
-        			},
-        			"original_currency":  {
-        				"currency_type": "USD",
-        				"money": 720.00
-        			}
-        	},
-        	"note": ""
-        }
-    ]
+
+	"warehouse": 
+	{
+		"code": "WH002",
+		"name": "海淀门店",
+		"type": "1",
+		"character": "2",
+		"owner_org": 
+		{
+			"code": "ORG001",
+			"name": "卡洛公司"
+		},
+
+		"vmi_org": 
+		{
+			"code": "ORG002",
+			"name": "海淀分店"
+		},
+
+		"address": "北京市大兴区38号"
+	},
+
+	"note": "",
+	"operator": "001",
+	"replenishment_code": "002",
+	"request_code": "003",
+	"detail": 
+	[
+		{
+			"detail_code": "ALLOT201611190001001",
+			"goods": 
+			{
+				"account_id": "Kano",
+				"product_sku_code": "WINE001SP0001SP0002",
+				"title": "科特勒2014 干红葡萄酒750ml",
+				"sales_catelogs": 
+				[
+					{
+						"code": "WINE",
+						"name": "酒水"
+					}
+				],
+
+				"product_sku": 
+				{
+					"bar_code": "",
+					"product_specifications": 
+					[
+						{
+							"specification_code": "SP0001",
+							"specification_name": "颜色",
+							"specification_value": "洋红"
+						},
+
+						{
+							"specification_code": "SP0002",
+							"specification_name": "容量",
+							"specification_value": "750ml"
+						}
+					],
+
+					"product_spu": 
+					{
+						"spu_code": "WINE001",
+						"base_unit": "瓶",
+						"brand": 
+						{
+							"code": "BR0001",
+							"name": "科特勒",
+							"manufacturer": 
+							{
+								"code": "BR0001",
+								"name": "法国科特勒酒庄"
+							}
+						},
+
+						"desc": ""
+					}
+				}
+			},
+
+			"batch_code": "",
+			"shelf_life": "",
+			"shelf_life_unit": "",
+			"quantity_should": 60,
+			"quantity_fact": 60,
+			"quantity_reject": 60,
+			"supply_price": 
+			{
+				"tax_type": "VTA",
+				"tax_rate": 0.17,
+				"price_including_tax": 
+				{
+					"currency": 
+					{
+						"currency_type": "CYN",
+						"price": 120.00
+					},
+
+					"original_currency": 
+					{
+						"currency_type": "USD",
+						"price": 120.00
+					}
+				},
+
+				"price": 
+				{
+					"currency": 
+					{
+						"currency_type": "CYN",
+						"price": 120.00
+					},
+
+					"original_currency": 
+					{
+						"currency_type": "USD",
+						"price": 120.00
+					}
+				}
+			},
+
+			"supply_amount": 
+			{
+				"money_including_tax": 
+				{
+					"currency": 
+					{
+						"currency_type": "CYN",
+						"money": 720.00
+					},
+
+					"original_currency": 
+					{
+						"currency_type": "USD",
+						"money": 720.00
+					}
+				},
+
+				"money": 
+				{
+					"currency": 
+					{
+						"currency_type": "CYN",
+						"money": 720.00
+					},
+
+					"original_currency": 
+					{
+						"currency_type": "USD",
+						"money": 720.00
+					}
+				}
+			},
+
+			"retail_price": 
+			{
+				"tax_type": "VTA",
+				"tax_rate": 0.17,
+				"price_including_tax": 
+				{
+					"currency": 
+					{
+						"currency_type": "CYN",
+						"price": 120.00
+					},
+
+					"original_currency": 
+					{
+						"currency_type": "USD",
+						"price": 120.00
+					}
+				},
+
+				"price": 
+				{
+					"currency": 
+					{
+						"currency_type": "CYN",
+						"price": 120.00
+					},
+
+					"original_currency": 
+					{
+						"currency_type": "USD",
+						"price": 120.00
+					}
+				}
+			},
+
+			"retail_amount": 
+			{
+				"money_including_tax": 
+				{
+					"currency": 
+					{
+						"currency_type": "CYN",
+						"money": 720.00
+					},
+
+					"original_currency": 
+					{
+						"currency_type": "USD",
+						"money": 720.00
+					}
+				},
+
+				"money": 
+				{
+					"currency": 
+					{
+						"currency_type": "CYN",
+						"money": 720.00
+					},
+
+					"original_currency": 
+					{
+						"currency_type": "USD",
+						"money": 720.00
+					}
+				}
+			},
+
+			"commission": 
+			{
+				"computation_rule": 
+				{
+					
+				},
+
+				"commission_value": 
+				{
+					"currency": 
+					{
+						"currency_type": "CYN",
+						"price": 120.00
+					},
+
+					"original_currency": 
+					{
+						"currency_type": "USD",
+						"price": 120.00
+					}
+				}
+			},
+
+			"commission_amount": 
+			{
+				"currency": 
+				{
+					"currency_type": "CYN",
+					"money": 720.00
+				},
+
+				"original_currency": 
+				{
+					"currency_type": "USD",
+					"money": 720.00
+				}
+			},
+
+			"note": ""
+		}
+	]
 }

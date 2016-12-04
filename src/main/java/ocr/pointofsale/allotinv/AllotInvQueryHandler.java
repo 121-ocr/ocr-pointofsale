@@ -11,7 +11,7 @@ import otocloud.framework.app.function.AppActivityImpl;
  */
 public class AllotInvQueryHandler extends SampleBillBaseQueryHandler {
 
-	public static final String ADDRESS = "getAllotInv";
+	public static final String ADDRESS = "getall";
 
 	public AllotInvQueryHandler(AppActivityImpl appActivity) {
 		super(appActivity);

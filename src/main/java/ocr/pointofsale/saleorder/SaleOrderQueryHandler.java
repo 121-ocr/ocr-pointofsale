@@ -11,7 +11,7 @@ import otocloud.framework.app.function.AppActivityImpl;
  */
 public class SaleOrderQueryHandler extends SampleBillBaseQueryHandler {
 
-	public static final String ADDRESS = "getSaleOrder";
+	public static final String ADDRESS = "getall";
 
 	public SaleOrderQueryHandler(AppActivityImpl appActivity) {
 		super(appActivity);
