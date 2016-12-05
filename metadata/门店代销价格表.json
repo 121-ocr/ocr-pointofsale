@@ -1,0 +1,103 @@
+{
+	"account": "4",  //门店租户
+	"goods": { //商品
+		"account": "Kano", //货主
+    	"product_sku_code": "WINE001SP0001SP0002",
+    	"title": "科特勒2014 干红葡萄酒750ml",
+    	"sales_catelogs": [{
+    		"code": "WINE",
+    		"name": "酒水"
+    	}],
+    	"product_sku": { 		            	
+        	"bar_code": "",
+        	"product_specifications": [
+        	 	{
+        	 		"specification_code": "SP0001",
+        	 		"specification_name": "颜色",
+        			"specification_value": "洋红"
+        		},
+        		{
+        	 		"specification_code": "SP0002",
+        	 		"specification_name": "容量",
+        			"specification_value": "750ml"
+        		}
+        	],
+        	"product_spu": {
+        		"spu_code": "WINE001",
+        		"base_unit": "瓶",
+        		"brand": {
+        			"code": "BR0001",
+        			"name": "科特勒",
+        			"manufacturer": {
+            			"code": "BR0001",
+            			"name": "法国科特勒酒庄"        			
+        			}		            			
+        		
+        		},
+        		"desc": ""		            	
+    		}
+    	}
+	},
+	"invbatchcode": "3", //批次号
+	"supply_price": {   //供货价
+		"tax_type": "VTA",  
+		"tax_rate": 0.17,	
+		"price_including_tax": {   //含税供货价
+			"currency": {		  
+				"currency_type": "CYN",
+				"price": 117.00
+			},
+			"original_currency":  { 
+				"currency_type": "USD",
+				"price": 17.55
+			}
+		},
+		"price": {   //无税供货价
+			"currency": {
+				"currency_type": "CYN",
+				"price": 100.00
+			},
+			"original_currency":  {
+				"currency_type": "USD",
+				"price": 15.00
+			}
+		}
+	},
+	"retail_price": {  //零售价
+		"tax_type": "Excise Duty", 
+		"tax_rate": 0.03,	
+		"price_including_tax": {  //含税零售价
+			"currency": {	
+				"currency_type": "CYN",
+				"price": 226.6
+			},
+			"original_currency":  { 
+				"currency_type": "USD",
+				"price": 41.2
+			}
+		},
+		"price": {    //无税零售价
+			"currency": {
+				"currency_type": "CYN",
+				"price": 220.00
+			},
+			"original_currency":  {
+				"currency_type": "USD",
+				"price": 40.00
+			}
+		}
+	},
+	"commission": {  //佣金
+		"computation_rule": {},  //佣金计算规则
+		"commission_value": {    //佣金
+			"currency": {		
+				"currency_type": "CYN",
+				"price": 20.00
+			},
+			"original_currency":  {
+				"currency_type": "USD",
+				"price": 5.00
+			}
+		}          	
+	}
+}

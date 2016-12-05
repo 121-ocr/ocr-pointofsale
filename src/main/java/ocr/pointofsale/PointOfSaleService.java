@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ocr.pointofsale.allotinv.AllotInvComponent;
+import ocr.pointofsale.posprice.POSPriceComponent;
 import ocr.pointofsale.saleorder.SaleOrderComponent;
 import otocloud.framework.app.engine.AppServiceImpl;
 import otocloud.framework.app.engine.WebServer;
@@ -41,6 +42,9 @@ public class PointOfSaleService extends AppServiceImpl
 		
 		SaleOrderComponent saleOrderCom = new SaleOrderComponent();
 		retActivities.add(saleOrderCom);
+		
+		POSPriceComponent priceCom = new POSPriceComponent();
+		retActivities.add(priceCom);
 		
 		return retActivities;
 	}

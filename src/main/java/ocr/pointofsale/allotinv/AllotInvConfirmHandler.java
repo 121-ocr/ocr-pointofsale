@@ -5,6 +5,7 @@ import io.vertx.core.http.HttpMethod;
 import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
 import ocr.common.handler.SampleBillBaseHandler;
+import ocr.pointofsale.posprice.POSPriceCreateHandler;
 import otocloud.common.ActionURI;
 import otocloud.framework.app.function.ActionDescriptor;
 import otocloud.framework.app.function.AppActivityImpl;
@@ -57,6 +58,18 @@ public class AllotInvConfirmHandler extends SampleBillBaseHandler {
 	 * @param future
 	 */
 	protected void afterProcess(JsonObject bo, Future<JsonObject> future) {
+		//保存门店价格表
+		POSPriceCreateHandler priceHandler = new POSPriceCreateHandler(this.appActivity);
+		JsonArray prices = new JsonArray();
+		//构建prices
+		priceHandler.ceatePrice(prices,invRet -> {
+			if(invRet.succeeded()){
+				future.complete(bo);
+			}else{
+				future.fail(invRet.cause());
+			}
+		});
+		
 		String from_account = this.appActivity.getAppInstContext().getAccount();
 		JsonArray paramList = new JsonArray();
 		for (Object detail : bo.getJsonArray("detail")) {
@@ -74,7 +87,7 @@ public class AllotInvConfirmHandler extends SampleBillBaseHandler {
 		// 增加现存量，调用现存量的接口
 		String invSrvName = this.appActivity.getDependencies().getJsonObject("inventorycenter_service")
 				.getString("service_name", "");
-		String getWarehouseAddress = from_account + "." + invSrvName + "." + "stockonhand-mgr.create";
+		String getWarehouseAddress = from_account + "." + invSrvName + "." + "stockonhand-mgr.batchcreate";
 		this.appActivity.getEventBus().send(getWarehouseAddress, paramList, invRet -> {
 			if(invRet.succeeded()){
 				future.complete(bo);
@@ -95,7 +108,7 @@ public class AllotInvConfirmHandler extends SampleBillBaseHandler {
 		HandlerDescriptor handlerDescriptor = actionDescriptor.getHandlerDescriptor();
 
 		// 外部访问url定义
-		ActionURI uri = new ActionURI("confirm", HttpMethod.POST);
+		ActionURI uri = new ActionURI(getEventAddress(), HttpMethod.POST);
 		handlerDescriptor.setRestApiURI(uri);
 
 		// 状态变化定义

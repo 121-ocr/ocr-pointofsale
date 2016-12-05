@@ -48,7 +48,7 @@ public class AllotInvCreateHandler extends SampleBillBaseHandler{
 		HandlerDescriptor handlerDescriptor = actionDescriptor.getHandlerDescriptor();
 
 		// 外部访问url定义
-		ActionURI uri = new ActionURI("create", HttpMethod.POST);
+		ActionURI uri = new ActionURI(getEventAddress(), HttpMethod.POST);
 		handlerDescriptor.setRestApiURI(uri);
 
 		// 状态变化定义
