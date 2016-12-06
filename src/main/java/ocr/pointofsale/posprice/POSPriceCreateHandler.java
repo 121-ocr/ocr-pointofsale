@@ -57,31 +57,4 @@ public class POSPriceCreateHandler extends SampleDocBaseHandler {
 		return actionDescriptor;
 	}
 
-	/**
-	 * 供补货入库单调用的接口
-	 * 
-	 * @param prices
-	 */
-	public void ceatePrice(JsonArray prices, Handler<AsyncResult<JsonArray>> next) {
-		Future<JsonArray> future = Future.future();
-		future.setHandler(next);
-		String acctId = this.appActivity.getAppInstContext().getAccount();
-		for (Object settingInfo : prices) {
-			((JsonObject) settingInfo).put("account", acctId);
-		}
-		// 记录事实对象（业务数据），会根据ActionDescriptor定义的状态机自动进行状态变化，并发出状态变化业务事件
-		// 自动查找数据源，自动进行分表处理
-		appActivity.getAppDatasource().getMongoClient_oto().save(appActivity.getDBTableName(appActivity.getName()),
-				prices, result -> {
-					if (result.succeeded()) {
-						JsonArray bos = result.result();
-						future.complete(bos);
-					} else {
-						Throwable errThrowable = result.cause();
-						String errMsgString = errThrowable.getMessage();
-						appActivity.getLogger().error(errMsgString, errThrowable);
-						future.fail(errThrowable);
-					}
-				});
-	}
 }
