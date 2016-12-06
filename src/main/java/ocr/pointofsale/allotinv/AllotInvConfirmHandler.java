@@ -42,60 +42,76 @@ public class AllotInvConfirmHandler extends SampleBillBaseHandler {
 		String partnerAcct = bo.getJsonObject("restocking_warehouse").getJsonObject("owner_org").getString("account");
 		return partnerAcct;
 	}
-	
+
 	/**
 	 * 输入值校验
+	 * 
 	 * @param msg
 	 * @param future
 	 */
 	protected void beforeProess(OtoCloudBusMessage<JsonObject> msg, Future<JsonObject> future) {
-		future.complete(msg.body());		
+		future.complete(msg.body());
 	}
-	
+
 	/**
-	 *  单据保存后处理
+	 * 单据保存后处理
+	 * 
 	 * @param bo
 	 * @param future
 	 */
 	protected void afterProcess(JsonObject bo, Future<JsonObject> future) {
-		//保存门店价格表
-		POSPriceCreateHandler priceHandler = new POSPriceCreateHandler(this.appActivity);
+		String from_account = this.appActivity.getAppInstContext().getAccount();
+		// 保存门店价格表
 		JsonArray prices = new JsonArray();
-		//构建prices
-		priceHandler.ceatePrice(prices,invRet -> {
-			if(invRet.succeeded()){
+		// 构建prices
+		JsonArray details = bo.getJsonArray("detail");
+		for (Object detail : details) {
+			JsonObject detail_obj = (JsonObject) detail;
+			JsonObject price = new JsonObject();
+			price.put("goods", detail_obj.getJsonObject("goods"));
+			price.put("invbatchcode", detail_obj.getString("batch_code"));
+			price.put("supply_price", detail_obj.getJsonObject("supply_price"));
+			price.put("retail_price", detail_obj.getJsonObject("retail_price"));
+			price.put("commission", detail_obj.getJsonObject("commission"));
+
+			prices.add(price);
+		}
+		// 创建门店价格表
+		String getPriceAddress = from_account + ".ocr-pointofsale.posprice.create";
+		this.appActivity.getEventBus().send(getPriceAddress, prices, invRet -> {
+			if (invRet.succeeded()) {
 				future.complete(bo);
-			}else{
+			} else {
 				future.fail(invRet.cause());
 			}
 		});
 		
-		String from_account = this.appActivity.getAppInstContext().getAccount();
 		JsonArray paramList = new JsonArray();
 		for (Object detail : bo.getJsonArray("detail")) {
 			JsonObject param = new JsonObject();
-			JsonObject detailO = (JsonObject)detail;
+			JsonObject detailO = (JsonObject) detail;
 			param.put("warehouses", bo.getJsonObject("warehouse"));
 			param.put("goods", detailO.getJsonObject("goods"));
 			param.put("sku", detailO.getJsonObject("goods").getString("product_sku_code"));
 			param.put("invbatchcode", detailO.getString("batch_code"));
 			param.put("warehousecode", bo.getJsonObject("warehouse").getString("code"));
-			param.put("onhandnum", detailO.getDouble("quantity_fact"));
-			
+			param.put("onhandnum", detailO.getString("quantity_fact"));
+			param.put("goodaccount", detailO.getJsonObject("goods").getString("account_id"));
+
 			paramList.add(param);
-		}		
+		}
 		// 增加现存量，调用现存量的接口
 		String invSrvName = this.appActivity.getDependencies().getJsonObject("inventorycenter_service")
 				.getString("service_name", "");
 		String getWarehouseAddress = from_account + "." + invSrvName + "." + "stockonhand-mgr.batchcreate";
 		this.appActivity.getEventBus().send(getWarehouseAddress, paramList, invRet -> {
-			if(invRet.succeeded()){
+			if (invRet.succeeded()) {
 				future.complete(bo);
-			}else{
+			} else {
 				future.fail(invRet.cause());
 			}
 		});
-				
+
 	}
 
 	/**
