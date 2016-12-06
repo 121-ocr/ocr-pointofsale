@@ -33,8 +33,9 @@ public class AllotInvCreateHandler extends SampleBillBaseHandler{
 		return ADDRESS;
 	}
 
+	@Override
 	public String getPartnerAcct(JsonObject bo) {
-		String partnerAcct = bo.getJsonObject("restocking_warehouse").getJsonObject("owner_org").getString("account"); 
+		String partnerAcct = bo.getJsonObject("supplier").getString("link_account"); 
 		return partnerAcct;
 	}	
 	
@@ -46,16 +47,24 @@ public class AllotInvCreateHandler extends SampleBillBaseHandler{
 
 		ActionDescriptor actionDescriptor = super.getActionDesc();
 		HandlerDescriptor handlerDescriptor = actionDescriptor.getHandlerDescriptor();
-
-		// 外部访问url定义
-		ActionURI uri = new ActionURI(getEventAddress(), HttpMethod.POST);
+		//handlerDescriptor.setMessageFormat("command");
+		
+		//参数
+/*		List<ApiParameterDescriptor> paramsDesc = new ArrayList<ApiParameterDescriptor>();
+		paramsDesc.add(new ApiParameterDescriptor("targetacc",""));		
+		paramsDesc.add(new ApiParameterDescriptor("soid",""));		
+		
+		actionDescriptor.getHandlerDescriptor().setParamsDesc(paramsDesc);	*/
+				
+		ActionURI uri = new ActionURI(ADDRESS, HttpMethod.POST);
 		handlerDescriptor.setRestApiURI(uri);
-
-		// 状态变化定义
-		BizStateSwitchDesc bizStateSwitchDesc = new BizStateSwitchDesc(BizRootType.BIZ_OBJECT, null, "created");
-		bizStateSwitchDesc.setWebExpose(true); // 是否向web端发布事件
+		
+		//状态变化定义
+		BizStateSwitchDesc bizStateSwitchDesc = new BizStateSwitchDesc(BizRootType.BIZ_OBJECT, 
+				null, "created");
+		bizStateSwitchDesc.setWebExpose(true); //是否向web端发布事件		
 		actionDescriptor.setBizStateSwitch(bizStateSwitchDesc);
-
+		
 		return actionDescriptor;
 	}
 
