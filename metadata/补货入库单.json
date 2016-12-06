@@ -1,5 +1,9 @@
 {
     "bo_id": "ALLOT201611190001",//单据号
+    "supplier": {
+    	"link_org_acct_rel" : "1",
+    	"link_account" : "3"
+	},
     "supply_date": "2016/11/15",  //补货日期
     "send_date": "2016/11/21",  //发货日期
     "confirm_date": "2016/11/25",  //入库日期	
