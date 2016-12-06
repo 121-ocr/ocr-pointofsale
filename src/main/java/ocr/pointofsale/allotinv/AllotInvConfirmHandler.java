@@ -62,6 +62,18 @@ public class AllotInvConfirmHandler extends SampleBillBaseHandler {
 		POSPriceCreateHandler priceHandler = new POSPriceCreateHandler(this.appActivity);
 		JsonArray prices = new JsonArray();
 		//构建prices
+		JsonArray details = bo.getJsonArray("detail");
+		for (Object detail : details) {
+			JsonObject detail_obj = (JsonObject)detail;
+			JsonObject price = new JsonObject();
+			price.put("goods", detail_obj.getJsonObject("goods"));
+			price.put("invbatchcode", detail_obj.getString("batch_code"));
+			price.put("supply_price", detail_obj.getJsonObject("supply_price"));
+			price.put("retail_price", detail_obj.getJsonObject("retail_price"));
+			price.put("commission", detail_obj.getJsonObject("commission"));
+			
+			prices.add(price);
+		}
 		priceHandler.ceatePrice(prices,invRet -> {
 			if(invRet.succeeded()){
 				future.complete(bo);

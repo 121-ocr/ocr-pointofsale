@@ -1,5 +1,4 @@
 {
-	"account": "4",  //门店租户
 	"goods": { //商品
 		"account": "Kano", //货主
     	"product_sku_code": "WINE001SP0001SP0002",

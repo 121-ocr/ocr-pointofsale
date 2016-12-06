@@ -26,7 +26,7 @@ public class POSPriceComponent extends AppActivityImpl {
 	@Override
 	public String getBizObjectType() {
 		// TODO Auto-generated method stub
-		return "bc_posprice";
+		return "bc_consignment_prices";
 	}
 
 	//发布此业务活动关联的业务角色
