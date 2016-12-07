@@ -1,5 +1,6 @@
 package ocr.pointofsale.allotinv;
 
+import io.vertx.core.json.JsonObject;
 import ocr.common.handler.SampleBillBaseQueryHandler;
 import otocloud.framework.app.function.AppActivityImpl;
 
@@ -31,7 +32,7 @@ public class AllotInvQueryHandler extends SampleBillBaseQueryHandler {
 	 * @return
 	 */
 	@Override
-	public String getStatus() {
+	public String getStatus(JsonObject msgBody) {
 		// TODO Auto-generated method stub
 		return "created";
 	}
