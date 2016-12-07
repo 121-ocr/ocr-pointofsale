@@ -68,6 +68,7 @@ public class AllotInvConfirmHandler extends SampleBillBaseHandler {
 		for (Object detail : details) {
 			JsonObject detail_obj = (JsonObject) detail;
 			JsonObject price = new JsonObject();
+			
 			price.put("goods", detail_obj.getJsonObject("goods"));
 			price.put("invbatchcode", detail_obj.getString("batch_code"));
 			price.put("supply_price", detail_obj.getJsonObject("supply_price"));
