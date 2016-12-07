@@ -44,7 +44,7 @@
         {
         	"detail_code": "ALLOT201611190001001", //行号
         	"goods": { //商品信息
-        		"account_id": "Kano",
+        		"account": "Kano",//所属货主
             	"product_sku_code": "WINE001SP0001SP0002",
             	"title": "科特勒2014 干红葡萄酒750ml",
             	"sales_catelogs": [{
@@ -94,21 +94,21 @@
         		"price_including_tax": {  //含税价
         			"currency": {		  //本币
         				"currency_type": "CYN",
-        				"price": 120.00
+        				"money": 120.00
         			},
         			"original_currency":  { //原币
         				"currency_type": "USD",
-        				"price": 120.00
+        				"money": 120.00
         			}
         		},
         		"price": {  //无税价
         			"currency": {
         				"currency_type": "CYN",
-        				"price": 120.00
+        				"money": 120.00
         			},
         			"original_currency":  {
         				"currency_type": "USD",
-        				"price": 120.00
+        				"money": 120.00
         			}
         		}
         	},
@@ -142,21 +142,21 @@
         		"price_including_tax": {  //含税价
         			"currency": {		  //本币
         				"currency_type": "CYN",
-        				"price": 120.00
+        				"money": 120.00
         			},
         			"original_currency":  { //原币
         				"currency_type": "USD",
-        				"price": 120.00
+        				"money": 120.00
         			}
         		},
         		"price": {  //无税价
         			"currency": {
         				"currency_type": "CYN",
-        				"price": 120.00
+        				"money": 120.00
         			},
         			"original_currency":  {
         				"currency_type": "USD",
-        				"price": 120.00
+        				"money": 120.00
         			}
         		}
         	},
@@ -189,11 +189,11 @@
         		"commission_value": {  	//金额
         			"currency": {		  //本币
         				"currency_type": "CYN",
-        				"price": 120.00
+        				"money": 120.00
         			},
         			"original_currency":  { //原币
         				"currency_type": "USD",
-        				"price": 120.00
+        				"money": 120.00
         			}
         		}         	
         	},

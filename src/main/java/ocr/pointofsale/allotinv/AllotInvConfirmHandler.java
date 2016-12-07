@@ -101,7 +101,7 @@ public class AllotInvConfirmHandler extends SampleBillBaseHandler {
 			param.put("invbatchcode", detailO.getString("batch_code"));
 			param.put("warehousecode", bo.getJsonObject("warehouse").getString("code"));
 			param.put("onhandnum", detailO.getString("quantity_fact"));
-			param.put("goodaccount", detailO.getJsonObject("goods").getString("account_id"));
+			param.put("goodaccount", detailO.getJsonObject("goods").getString("account"));
 
 			paramList.add(param);
 		}
