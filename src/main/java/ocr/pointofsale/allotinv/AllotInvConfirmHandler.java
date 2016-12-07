@@ -5,7 +5,6 @@ import io.vertx.core.http.HttpMethod;
 import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
 import ocr.common.handler.SampleBillBaseHandler;
-import ocr.pointofsale.posprice.POSPriceCreateHandler;
 import otocloud.common.ActionURI;
 import otocloud.framework.app.function.ActionDescriptor;
 import otocloud.framework.app.function.AppActivityImpl;
@@ -39,7 +38,7 @@ public class AllotInvConfirmHandler extends SampleBillBaseHandler {
 
 	@Override
 	public String getPartnerAcct(JsonObject bo) {
-		String partnerAcct = bo.getJsonObject("restocking_warehouse").getJsonObject("owner_org").getString("account");
+		String partnerAcct = bo.getJsonObject("restocking_warehouse").getString("account");
 		return partnerAcct;
 	}
 
@@ -78,11 +77,16 @@ public class AllotInvConfirmHandler extends SampleBillBaseHandler {
 			prices.add(price);
 		}
 		// 创建门店价格表
-		String getPriceAddress = from_account + ".ocr-pointofsale.posprice.create";
+		String getPriceAddress = from_account +  "." 
+				+ this.appActivity.getService().getRealServiceName() + ".posprice.create";
 		this.appActivity.getEventBus().send(getPriceAddress, prices, invRet -> {
 			if (invRet.succeeded()) {
 				future.complete(bo);
 			} else {
+				Throwable errThrowable = invRet.cause();
+				String errMsgString = errThrowable.getMessage();
+				appActivity.getLogger().error(errMsgString, errThrowable);				
+
 				future.fail(invRet.cause());
 			}
 		});
@@ -107,9 +111,13 @@ public class AllotInvConfirmHandler extends SampleBillBaseHandler {
 		String getWarehouseAddress = from_account + "." + invSrvName + "." + "stockonhand-mgr.batchcreate";
 		this.appActivity.getEventBus().send(getWarehouseAddress, paramList, invRet -> {
 			if (invRet.succeeded()) {
-				future.complete(bo);
+				//future.complete(bo);
 			} else {
-				future.fail(invRet.cause());
+				Throwable errThrowable = invRet.cause();
+				String errMsgString = errThrowable.getMessage();
+				appActivity.getLogger().error(errMsgString, errThrowable);				
+
+				//future.fail(invRet.cause());
 			}
 		});
 
@@ -129,7 +137,7 @@ public class AllotInvConfirmHandler extends SampleBillBaseHandler {
 		handlerDescriptor.setRestApiURI(uri);
 
 		// 状态变化定义
-		BizStateSwitchDesc bizStateSwitchDesc = new BizStateSwitchDesc(BizRootType.BIZ_OBJECT, "created", "created");
+		BizStateSwitchDesc bizStateSwitchDesc = new BizStateSwitchDesc(BizRootType.BIZ_OBJECT, "created", "confirmed");
 		bizStateSwitchDesc.setWebExpose(true); // 是否向web端发布事件
 		actionDescriptor.setBizStateSwitch(bizStateSwitchDesc);
 
