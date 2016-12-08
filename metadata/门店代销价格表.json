@@ -1,6 +1,6 @@
 {
 	"goods": { //商品
-		"account_id": "Kano", //货主
+		"account": "Kano", //货主
     	"product_sku_code": "WINE001SP0001SP0002",
     	"title": "科特勒2014 干红葡萄酒750ml",
     	"sales_catelogs": [{

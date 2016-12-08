@@ -18,7 +18,7 @@ import otocloud.framework.core.HandlerDescriptor;
  * @author wanghw
  *
  */
-public class SaleOrderCreateHandler extends SampleBillBaseHandler{
+public class SaleOrderCreateHandler extends SampleBillBaseHandler {
 
 	public static final String ADDRESS = "create";
 
@@ -34,9 +34,10 @@ public class SaleOrderCreateHandler extends SampleBillBaseHandler{
 	public String getEventAddress() {
 		return ADDRESS;
 	}
-	
+
 	/**
-	 *  单据保存后处理
+	 * 单据保存后处理
+	 * 
 	 * @param bo
 	 * @param future
 	 */
@@ -45,30 +46,30 @@ public class SaleOrderCreateHandler extends SampleBillBaseHandler{
 		JsonArray paramList = new JsonArray();
 		for (Object detail : bo.getJsonArray("detail")) {
 			JsonObject param = new JsonObject();
-			JsonObject detailO = (JsonObject)detail;
+			JsonObject detailO = (JsonObject) detail;
 			param.put("warehouses", bo.getJsonObject("warehouse"));
 			param.put("goods", detailO.getJsonObject("goods"));
 			param.put("sku", detailO.getJsonObject("goods").getString("product_sku_code"));
 			param.put("invbatchcode", detailO.getString("batch_code"));
 			param.put("warehousecode", bo.getJsonObject("warehouse").getString("code"));
-			param.put("onhandnum", "-"+detailO.getString("quantity"));
-			
+			param.put("onhandnum", "-" + detailO.getString("quantity"));
+			param.put("goodaccount", detailO.getJsonObject("goods").getString("account"));
+
 			paramList.add(param);
-		}		
+		}
 		// 增加现存量，调用现存量的接口
 		String invSrvName = this.appActivity.getDependencies().getJsonObject("inventorycenter_service")
 				.getString("service_name", "");
-		String getWarehouseAddress = from_account + "." + invSrvName + "." + "stockonhand-mgr.create";
+		String getWarehouseAddress = from_account + "." + invSrvName + "." + "stockonhand-mgr.batchcreate";
 		this.appActivity.getEventBus().send(getWarehouseAddress, paramList, invRet -> {
-			if(invRet.succeeded()){
+			if (invRet.succeeded()) {
 				future.complete(bo);
-			}else{
+			} else {
 				future.fail(invRet.cause());
 			}
 		});
-				
+
 	}
-	
 
 	/**
 	 * {@inheritDoc}
