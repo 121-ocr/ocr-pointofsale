@@ -52,7 +52,7 @@ public class SaleOrderCreateHandler extends SampleBillBaseHandler {
 			param.put("sku", detailO.getJsonObject("goods").getString("product_sku_code"));
 			param.put("invbatchcode", detailO.getString("batch_code"));
 			param.put("warehousecode", bo.getJsonObject("warehouse").getString("code"));
-			param.put("onhandnum", "-" + detailO.getInteger("quantity"));
+			param.put("onhandnum", "-" + detailO.getValue("quantity"));
 			param.put("goodaccount", detailO.getJsonObject("goods").getString("account"));
 
 			paramList.add(param);
