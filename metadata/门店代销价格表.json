@@ -44,21 +44,21 @@
 		"price_including_tax": {   //含税供货价
 			"currency": {		  
 				"currency_type": "CYN",
-				"price": 117.00
+				"money": 117.00
 			},
 			"original_currency":  { 
 				"currency_type": "USD",
-				"price": 17.55
+				"money": 17.55
 			}
 		},
 		"price": {   //无税供货价
 			"currency": {
 				"currency_type": "CYN",
-				"price": 100.00
+				"money": 100.00
 			},
 			"original_currency":  {
 				"currency_type": "USD",
-				"price": 15.00
+				"money": 15.00
 			}
 		}
 	},
@@ -68,21 +68,21 @@
 		"price_including_tax": {  //含税零售价
 			"currency": {	
 				"currency_type": "CYN",
-				"price": 226.6
+				"money": 226.6
 			},
 			"original_currency":  { 
 				"currency_type": "USD",
-				"price": 41.2
+				"money": 41.2
 			}
 		},
 		"price": {    //无税零售价
 			"currency": {
 				"currency_type": "CYN",
-				"price": 220.00
+				"money": 220.00
 			},
 			"original_currency":  {
 				"currency_type": "USD",
-				"price": 40.00
+				"money": 40.00
 			}
 		}
 	},
@@ -91,11 +91,11 @@
 		"commission_value": {    //佣金
 			"currency": {		
 				"currency_type": "CYN",
-				"price": 20.00
+				"money": 20.00
 			},
 			"original_currency":  {
 				"currency_type": "USD",
-				"price": 5.00
+				"money": 5.00
 			}
 		}          	
 	}

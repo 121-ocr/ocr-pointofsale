@@ -74,21 +74,21 @@
         		"price_including_tax": {  //含税价
         			"currency": {		  //本币
         				"currency_type": "CYN",
-        				"price": 120.00
+        				"money": 120.00
         			},
         			"original_currency":  { //原币
         				"currency_type": "USD",
-        				"price": 120.00
+        				"money": 120.00
         			}
         		},
         		"price": {  //无税价
         			"currency": {
         				"currency_type": "CYN",
-        				"price": 120.00
+        				"money": 120.00
         			},
         			"original_currency":  {
         				"currency_type": "USD",
-        				"price": 120.00
+        				"money": 120.00
         			}
         		}
         	},
