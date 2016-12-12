@@ -1,0 +1,11 @@
+{
+    "bo_id": "",//收货通知id
+    "supplier": {
+    	"link_org_acct_rel" : "1",
+    	"link_account" : "3"
+	},
+    "ship_date": "2016-11-21",  //发货日期
+	"ship_actor" : {},
+	"shipment_id": "",
+	"replenishments_id": ""
+}
