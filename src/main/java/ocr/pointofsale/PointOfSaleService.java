@@ -3,6 +3,7 @@ package ocr.pointofsale;
 import java.util.ArrayList;
 import java.util.List;
 
+import ocr.pointofsale.accept.AcceptComponent;
 import ocr.pointofsale.allotinv.AllotInvComponent;
 import ocr.pointofsale.posprice.POSPriceComponent;
 import ocr.pointofsale.saleorder.SaleOrderComponent;
@@ -45,6 +46,9 @@ public class PointOfSaleService extends AppServiceImpl
 		
 		POSPriceComponent priceCom = new POSPriceComponent();
 		retActivities.add(priceCom);
+		
+		AcceptComponent acceptCom = new AcceptComponent();
+		retActivities.add(acceptCom);
 		
 		return retActivities;
 	}
