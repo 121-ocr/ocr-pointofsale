@@ -7,5 +7,6 @@
     "ship_date": "2016-11-21",  //发货日期
 	"ship_actor" : {},
 	"shipment_id": "",
-	"replenishments_id": ""
+	"replenishments_id": "",
+	"is_completed" : false
 }

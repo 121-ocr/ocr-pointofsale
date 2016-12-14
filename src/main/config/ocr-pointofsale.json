@@ -76,9 +76,9 @@
 							{
 								"dependencies": 
 								{
-									"inventorycenter_service": 
+									"salescenter_service": 
 									{
-										"service_name": "ocr-inventorycenter"
+										"service_name": "ocr-sales-center"
 									}
 								}
 							}
