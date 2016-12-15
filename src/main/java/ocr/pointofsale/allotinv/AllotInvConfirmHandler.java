@@ -112,11 +112,11 @@ public class AllotInvConfirmHandler extends ActionHandlerImpl<JsonObject> {
 		for (Object detail : replenishment.getJsonArray("details")) {
 			JsonObject param = new JsonObject();
 			JsonObject detailO = (JsonObject) detail;
-			param.put("warehouses", replenishment.getJsonObject("target_warehose"));
+			param.put("warehouses", replenishment.getJsonObject("target_warehouse"));
 			param.put("goods", detailO.getJsonObject("goods"));
 			param.put("sku", detailO.getJsonObject("goods").getString("product_sku_code"));
 			param.put("invbatchcode", detailO.getString("invbatchcode"));
-			param.put("warehousecode", replenishment.getJsonObject("target_warehose").getString("code"));
+			param.put("warehousecode", replenishment.getJsonObject("target_warehouse").getString("code"));
 			Double conhandnum = 0.0;
 			JsonArray replenishment_s = detailO.getJsonArray("shipments");
 			if(replenishment_s == null || replenishment_s.isEmpty()){
