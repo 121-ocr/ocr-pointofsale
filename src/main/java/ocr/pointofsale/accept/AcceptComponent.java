@@ -57,6 +57,9 @@ public class AcceptComponent extends AppActivityImpl {
 		AcceptCreateHandler acceptCreateHandler = new AcceptCreateHandler(this);
 		ret.add(acceptCreateHandler);
 		
+		AcceptQueryHandler acceptQueryHandler = new AcceptQueryHandler(this);
+		ret.add(acceptQueryHandler);
+		
 		return ret;
 	}
 

@@ -6,7 +6,6 @@ import java.util.List;
 import io.vertx.core.CompositeFuture;
 import io.vertx.core.Future;
 import io.vertx.core.http.HttpMethod;
-import io.vertx.core.impl.CompositeFutureImpl;
 import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
 import ocr.common.handler.SampleBillBaseQueryHandler;
@@ -43,46 +42,55 @@ public class AllotInvQueryHandler extends SampleBillBaseQueryHandler {
 	 */
 	@Override
 	public void handle(OtoCloudBusMessage<JsonObject> msg) {
-		String from_account = this.appActivity.getAppInstContext().getAccount();
+		String account = this.appActivity.getAppInstContext().getAccount();
 		// 按照分页条件查询收货通知
-		String getAcceptAddress = from_account + "." + this.appActivity.getService().getRealServiceName()
+		String getAcceptAddress = account + "." + this.appActivity.getService().getRealServiceName()
 				+ ".accept.query";
 		JsonObject queryParams = msg.body();		
 		this.appActivity.getEventBus().send(getAcceptAddress, queryParams, invRet -> {
 			if (invRet.succeeded()) {
-				JsonObject data = (JsonObject) invRet.result();
+				JsonObject data = (JsonObject) invRet.result().body();
 				//得到收货通知
 				JsonArray datas = data.getJsonArray("datas");
 				List<Future> futures = new ArrayList<>();
+							
 				for (Object obj : datas) {
-					JsonObject allData = new JsonObject();//包含收货通知和补货单
-					JsonObject accept = (JsonObject)obj;
-					allData.put("accept", accept);
+					//JsonObject allData = new JsonObject();//包含收货通知和补货单
+					JsonObject accept = ((JsonObject)obj).getJsonObject("bo");
+					//allData.put("accept", accept);
 					String replenishments_id = accept.getString("replenishments_id");
+					
 					Future<JsonObject> repRelationFuture = Future.future();
 					futures.add(repRelationFuture);
-					//根据id查询补货单
+					
+					JsonObject queryParam = new JsonObject();					
+					queryParam.put("bo_id", replenishments_id);
+					//queryArray.add(queryParam);			
+										
+ 					//根据id查询补货单
 					String invSrvName = this.appActivity.getDependencies().getJsonObject("salescenter_service")
 							.getString("service_name", "");
-					String getReplenishmentAddress = from_account + "." + invSrvName + "." + "channel-restocking.query4accept";
-					JsonObject queryParam = new JsonObject();
-					queryParam.put("bo_id", replenishments_id);
-					this.appActivity.getEventBus().send(getReplenishmentAddress, queryParam, ret -> {
+					String fromAcct = accept.getJsonObject("supplier").getString("link_account");
+					String getReplenishmentAddress = fromAcct + "." + invSrvName + "." + "channel-restocking.findone";
+
+ 					this.appActivity.getEventBus().send(getReplenishmentAddress, queryParam, ret -> {
 						if (ret.succeeded()) {
-							allData.put("replenishment", ret.result());
-							repRelationFuture.complete(allData);
+							JsonObject retJsonObject = (JsonObject)ret.result().body();
+							accept.put("replenishment", retJsonObject);
+							repRelationFuture.complete();
 						} else {
-							Throwable errThrowable = invRet.cause();
+							Throwable errThrowable = ret.cause();
 							String errMsgString = errThrowable.getMessage();
 							appActivity.getLogger().error(errMsgString, errThrowable);	
-							repRelationFuture.fail(ret.cause());
+							repRelationFuture.fail(errThrowable);
 						}
 					});
 				}
+				
 				//组合
-				JsonArray ret = new JsonArray();
+				//JsonArray ret = new JsonArray();
 				CompositeFuture.join(futures).setHandler(ar -> {
-					CompositeFutureImpl comFutures = (CompositeFutureImpl) ar;
+/*					CompositeFutureImpl comFutures = (CompositeFutureImpl) ar;
 					if (comFutures.size() > 0) {
 						for (int i = 0; i < comFutures.size(); i++) {
 							if (comFutures.succeeded(i)) {
@@ -90,8 +98,8 @@ public class AllotInvQueryHandler extends SampleBillBaseQueryHandler {
 								ret.add(document);
 							}
 						}
-					}
-					msg.reply(ret);
+					}*/
+					msg.reply(data);
 				});
 			} else {
 				Throwable errThrowable = invRet.cause();
