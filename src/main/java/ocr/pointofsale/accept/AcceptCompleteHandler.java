@@ -1,12 +1,7 @@
-package ocr.pointofsale.posprice;
+package ocr.pointofsale.accept;
 
-import io.vertx.core.AsyncResult;
-import io.vertx.core.Future;
-import io.vertx.core.Handler;
 import io.vertx.core.http.HttpMethod;
-import io.vertx.core.json.JsonArray;
-import io.vertx.core.json.JsonObject;
-import ocr.common.handler.SampleDocBaseHandler;
+import ocr.common.handler.SampleBillBaseHandler;
 import otocloud.common.ActionURI;
 import otocloud.framework.app.function.ActionDescriptor;
 import otocloud.framework.app.function.AppActivityImpl;
@@ -15,15 +10,16 @@ import otocloud.framework.app.function.BizStateSwitchDesc;
 import otocloud.framework.core.HandlerDescriptor;
 
 /**
- * 门店代销价格创建操作
+ * 零售单创建操作
  * 
  * @author wanghw
  *
  */
-public class POSPriceCreateHandler extends SampleDocBaseHandler {
+public class AcceptCompleteHandler extends SampleBillBaseHandler {
 
-	public POSPriceCreateHandler(AppActivityImpl appActivity) {
+	public AcceptCompleteHandler(AppActivityImpl appActivity) {
 		super(appActivity);
+		// TODO Auto-generated constructor stub
 	}
 
 	/**
@@ -31,7 +27,7 @@ public class POSPriceCreateHandler extends SampleDocBaseHandler {
 	 */
 	@Override
 	public String getEventAddress() {
-		return POSPriceConstant.CREATE_ADDRESS;
+		return AcceptConstant.ACCEPT_ADDRESS;
 	}
 
 	/**
@@ -44,11 +40,11 @@ public class POSPriceCreateHandler extends SampleDocBaseHandler {
 		HandlerDescriptor handlerDescriptor = actionDescriptor.getHandlerDescriptor();
 
 		// 外部访问url定义
-		ActionURI uri = new ActionURI(getEventAddress(), HttpMethod.POST);
+		ActionURI uri = new ActionURI(AcceptConstant.ACCEPT_ADDRESS, HttpMethod.POST);
 		handlerDescriptor.setRestApiURI(uri);
 
 		// 状态变化定义
-		BizStateSwitchDesc bizStateSwitchDesc = new BizStateSwitchDesc(BizRootType.BIZ_OBJECT, null, POSPriceConstant.CREATE_STATUS);
+		BizStateSwitchDesc bizStateSwitchDesc = new BizStateSwitchDesc(BizRootType.BIZ_OBJECT, AcceptConstant.CREATE_STATUS, AcceptConstant.COMPLETED_STATUS);
 		bizStateSwitchDesc.setWebExpose(true); // 是否向web端发布事件
 		actionDescriptor.setBizStateSwitch(bizStateSwitchDesc);
 

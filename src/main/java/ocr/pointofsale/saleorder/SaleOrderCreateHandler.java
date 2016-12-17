@@ -20,8 +20,6 @@ import otocloud.framework.core.HandlerDescriptor;
  */
 public class SaleOrderCreateHandler extends SampleBillBaseHandler {
 
-	public static final String ADDRESS = "create";
-
 	public SaleOrderCreateHandler(AppActivityImpl appActivity) {
 		super(appActivity);
 		// TODO Auto-generated constructor stub
@@ -32,7 +30,7 @@ public class SaleOrderCreateHandler extends SampleBillBaseHandler {
 	 */
 	@Override
 	public String getEventAddress() {
-		return ADDRESS;
+		return SaleOrderConstant.CREATE_ADDRESS;
 	}
 
 	/**
@@ -54,6 +52,9 @@ public class SaleOrderCreateHandler extends SampleBillBaseHandler {
 			param.put("warehousecode", bo.getJsonObject("warehouse").getString("code"));
 			param.put("onhandnum", "-" + detailO.getValue("quantity"));
 			param.put("goodaccount", detailO.getJsonObject("goods").getString("account"));
+			param.put("status", "out");
+			param.put("biz_data_type", "bp_saleorder");
+			param.put("bo_id", bo.getString("bo_id"));
 
 			paramList.add(param);
 		}
@@ -81,11 +82,11 @@ public class SaleOrderCreateHandler extends SampleBillBaseHandler {
 		HandlerDescriptor handlerDescriptor = actionDescriptor.getHandlerDescriptor();
 
 		// 外部访问url定义
-		ActionURI uri = new ActionURI("create", HttpMethod.POST);
+		ActionURI uri = new ActionURI(getEventAddress(), HttpMethod.POST);
 		handlerDescriptor.setRestApiURI(uri);
 
 		// 状态变化定义
-		BizStateSwitchDesc bizStateSwitchDesc = new BizStateSwitchDesc(BizRootType.BIZ_OBJECT, null, "created");
+		BizStateSwitchDesc bizStateSwitchDesc = new BizStateSwitchDesc(BizRootType.BIZ_OBJECT, null, SaleOrderConstant.CREATE_STATUS);
 		bizStateSwitchDesc.setWebExpose(true); // 是否向web端发布事件
 		actionDescriptor.setBizStateSwitch(bizStateSwitchDesc);
 

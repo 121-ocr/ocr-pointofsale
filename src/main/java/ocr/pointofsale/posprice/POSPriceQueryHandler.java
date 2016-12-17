@@ -13,8 +13,6 @@ import otocloud.framework.core.OtoCloudBusMessage;
  */
 public class POSPriceQueryHandler extends SampleDocQueryHandler {
 
-	public static final String ADDRESS = "getPriceByCon";
-
 	public POSPriceQueryHandler(AppActivityImpl appActivity) {
 		super(appActivity);
 		// TODO Auto-generated constructor stub
@@ -28,7 +26,6 @@ public class POSPriceQueryHandler extends SampleDocQueryHandler {
 
 		appActivity.getAppDatasource().getMongoClient().find(appActivity.getDBTableName(appActivity.getBizObjectType()),
 				query,
-				// null,
 				result -> {
 					if (result.succeeded()) {
 						msg.reply(result.result());
@@ -39,13 +36,12 @@ public class POSPriceQueryHandler extends SampleDocQueryHandler {
 						msg.fail(100, errMsgString);
 					}
 				});
-
 	}
 
 	@Override
 	public String getEventAddress() {
 		// TODO Auto-generated method stub
-		return ADDRESS;
+		return POSPriceConstant.QUERY_ADDRESS;
 	}
 
 }

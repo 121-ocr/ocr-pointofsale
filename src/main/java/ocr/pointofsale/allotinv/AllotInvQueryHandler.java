@@ -23,8 +23,6 @@ import otocloud.framework.core.OtoCloudBusMessage;
  */
 public class AllotInvQueryHandler extends SampleBillBaseQueryHandler {
 
-	public static final String ADDRESS = "getall";
-
 	public AllotInvQueryHandler(AppActivityImpl appActivity) {
 		super(appActivity);
 		// TODO Auto-generated constructor stub
@@ -34,7 +32,7 @@ public class AllotInvQueryHandler extends SampleBillBaseQueryHandler {
 	@Override
 	public String getEventAddress() {
 		// TODO Auto-generated method stub
-		return ADDRESS;
+		return AllotInvConstant.QUERY_ADDRESS;
 	}
 
 	/**

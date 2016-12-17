@@ -1,7 +1,9 @@
 package ocr.pointofsale.allotinv;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import io.vertx.core.CompositeFuture;
 import io.vertx.core.Future;
@@ -26,8 +28,6 @@ import otocloud.framework.core.OtoCloudBusMessage;
  */
 public class AllotInvConfirmHandler extends ActionHandlerImpl<JsonObject> {
 
-	public static final String ADDRESS = "confirm";
-
 	public AllotInvConfirmHandler(AppActivityImpl appActivity) {
 		super(appActivity);
 	}
@@ -37,31 +37,35 @@ public class AllotInvConfirmHandler extends ActionHandlerImpl<JsonObject> {
 	 */
 	@Override
 	public String getEventAddress() {
-		return ADDRESS;
+		return AllotInvConstant.CONFIRM_ADDRESS;
 	}
 
 	@Override
 	public void handle(OtoCloudBusMessage<JsonObject> msg) {
 		List<Future> futures = new ArrayList<>();
 		// 更新收货通知
-		JsonObject accept = msg.body().getJsonObject("accept");
+		JsonObject accept = msg.body();
+		JsonObject replenishment = accept.getJsonObject("replenishment").getJsonObject("bo");
+		JsonObject shipment = accept.getJsonObject("shipment").getJsonObject("bo");
+		accept.remove("replenishment");
 		Future<JsonObject> acceptFuture = Future.future();
 		futures.add(acceptFuture);
 		completeAccept(accept, acceptFuture);
-		// 更新补货单
-		JsonObject replenishment = msg.body().getJsonObject("replenishment");
 		// 创建价格表
 		Future<JsonObject> priceFuture = Future.future();
 		futures.add(priceFuture);
 		createPrices(replenishment, priceFuture);
 		// 更新现存量
-		JsonArray invOnhand = getInvOnhandObject(replenishment);
+		JsonArray invOnhand = getInvOnhandObject(shipment);
 		Future<JsonObject> invOnhandFuture = Future.future();
 		futures.add(invOnhandFuture);
 		createInvOnhand(invOnhand, invOnhandFuture);
+		// 更新发货单
+		Future<JsonObject> shipmentFuture = Future.future();
+		futures.add(shipmentFuture);
+		completeShipment(shipment, shipmentFuture);
 
 		// 组合
-		JsonArray ret = new JsonArray();
 		CompositeFuture.join(futures).setHandler(ar -> {
 			CompositeFutureImpl comFutures = (CompositeFutureImpl) ar;
 			if (comFutures.size() > 0) {
@@ -75,8 +79,31 @@ public class AllotInvConfirmHandler extends ActionHandlerImpl<JsonObject> {
 				}
 			}
 			// 更新补货单
-			updateReplenishment(replenishment, msg);
+			updateReplenishment(replenishment,shipment,msg);
 		});
+	}
+
+	/**
+	 * 更新发货单
+	 * @param shipment
+	 * @param shipmentFuture
+	 */
+	private void completeShipment(JsonObject shipment, Future<JsonObject> shipmentFuture) {
+		String from_account = this.appActivity.getAppInstContext().getAccount();
+		String invSrvName = this.appActivity.getDependencies().getJsonObject("salescenter_service")
+				.getString("service_name", "");
+		String updateShipmentAddress = from_account + "." + invSrvName + "." + "channel-restocking.complete";
+		
+		this.appActivity.getEventBus().send(updateShipmentAddress, shipment, ret -> {
+			if (ret.succeeded()) {
+				shipmentFuture.complete();
+			} else {
+				Throwable errThrowable = ret.cause();
+				String errMsgString = errThrowable.getMessage();
+				appActivity.getLogger().error(errMsgString, errThrowable);
+				shipmentFuture.fail(errMsgString);
+			}
+		});		
 	}
 
 	/**
@@ -108,34 +135,24 @@ public class AllotInvConfirmHandler extends ActionHandlerImpl<JsonObject> {
 	 * @param replenishment
 	 * @return
 	 */
-	private JsonArray getInvOnhandObject(JsonObject replenishment) {
+	private JsonArray getInvOnhandObject(JsonObject shipment) {
 		JsonArray paramList = new JsonArray();
-		for (Object detail : replenishment.getJsonArray("details")) {
+		for (Object detail : shipment.getJsonArray("details")) {
 			JsonObject param = new JsonObject();
 			JsonObject detailO = (JsonObject) detail;
-			param.put("warehouses", replenishment.getJsonObject("target_warehouse"));
+			param.put("warehouses", shipment.getJsonObject("target_warehouse"));
 			param.put("goods", detailO.getJsonObject("goods"));
 			param.put("sku", detailO.getJsonObject("goods").getString("product_sku_code"));
 			param.put("invbatchcode", detailO.getString("invbatchcode"));
-			param.put("warehousecode", replenishment.getJsonObject("target_warehouse").getString("code"));
-			Double conhandnum = 0.0;
-			JsonArray replenishment_s = detailO.getJsonArray("shipments");
-			if (replenishment_s == null || replenishment_s.isEmpty()) {
-				continue;
-			}
-			for (Object object2 : replenishment_s) {
-				JsonObject detail_s = (JsonObject) object2;
-				if (detail_s.getBoolean("accept_completed")) {
-					conhandnum = conhandnum.doubleValue()
-							+ Double.valueOf(detailO.getString("accept_quantity")).doubleValue();
-				}
-			}
-			param.put("onhandnum", conhandnum.toString());
+			param.put("warehousecode", shipment.getJsonObject("target_warehouse").getString("code"));
+			param.put("status", "in");
+			param.put("biz_data_type", "bp_shipment");
+			param.put("bo_id", shipment.getString("bo_id"));
 			param.put("goodaccount", detailO.getJsonObject("goods").getString("account"));
-
-			if (conhandnum > 0) {
-				paramList.add(param);
-			}
+		
+			param.put("onhandnum", detailO.getValue("accept_quantity"));
+			
+			paramList.add(param);
 		}
 		return paramList;
 	}
@@ -148,7 +165,6 @@ public class AllotInvConfirmHandler extends ActionHandlerImpl<JsonObject> {
 	 */
 	private void createPrices(JsonObject replenishment, Future<JsonObject> priceFuture) {
 		JsonArray details = replenishment.getJsonArray("details");
-		JsonObject query = new JsonObject();
 		JsonObject query_con = new JsonObject();
 		JsonArray query_item = new JsonArray();
 		query_con.put("$or", query_item);
@@ -158,23 +174,22 @@ public class AllotInvConfirmHandler extends ActionHandlerImpl<JsonObject> {
 			JsonObject temp = new JsonObject();
 			temp.put("goods.product_sku_code", detail_obj.getJsonObject("goods").getString("product_sku_code"));
 			temp.put("invbatchcode", detail_obj.getString("invbatchcode"));
-			temp.put("goods.account", replenishment.getString("account"));
+			temp.put("goods.account", detail_obj.getJsonObject("goods").getString("account"));
 
 			query_item.add(temp);
 		}
-		query.put("query", query_con);
 		String from_account = this.appActivity.getAppInstContext().getAccount();
 		// 创建门店价格表
 		String getPriceAddress = from_account + "." + this.appActivity.getService().getRealServiceName()
 				+ ".posprice.query";
-		List<Future> futures = new ArrayList<>();
 
-		this.appActivity.getEventBus().send(getPriceAddress, query, invRet -> {
+		this.appActivity.getEventBus().send(getPriceAddress, query_con, invRet -> {
 			if (invRet.succeeded()) {
 				// 已存在的价格
-				JsonObject data = (JsonObject) invRet.result();
-				JsonArray datas = data.getJsonArray("datas");
+				JsonObject data = (JsonObject) invRet.result().body();
+				JsonArray datas = data.getJsonArray("result");
 				// 构建prices
+				JsonArray prices = new JsonArray();
 				for (Object detail : details) {
 					JsonObject detail_obj = (JsonObject) detail;
 					JsonObject price = new JsonObject();
@@ -190,8 +205,8 @@ public class AllotInvConfirmHandler extends ActionHandlerImpl<JsonObject> {
 						JsonObject temp = (JsonObject) obj;
 						if (price.getJsonObject("goods").getString("product_sku_code")
 								.equals(temp.getJsonObject("goods").getString("product_sku_code"))
-								&& price.getJsonObject("goods").getString("accoutn")
-										.equals(temp.getJsonObject("goods").getString("accoutn"))
+								&& price.getJsonObject("goods").getString("account")
+										.equals(temp.getJsonObject("goods").getString("account"))
 								&& price.getString("invbatchcode").equals(temp.getString("invbatchcode"))) {
 							isExist = true;
 							break;
@@ -200,36 +215,26 @@ public class AllotInvConfirmHandler extends ActionHandlerImpl<JsonObject> {
 					if (isExist) {
 						continue;
 					}
-					Future<JsonObject> future = Future.future();
-					futures.add(future);
-					future.complete(price);
+					prices.add(price);					
 				}
-			}
-		});
-		// 组合
-		CompositeFuture.join(futures).setHandler(ar -> {
-			JsonArray prices = new JsonArray();
-			CompositeFutureImpl comFutures = (CompositeFutureImpl) ar;
-			if (comFutures.size() > 0) {
-				for (int i = 0; i < comFutures.size(); i++) {
-					if (comFutures.succeeded(i)) {
-						prices.add(comFutures.result());
-					}
-				}
-			}
-			// 创建门店价格表
-			String createPriceAddress = from_account + "." + this.appActivity.getService().getRealServiceName()
-					+ ".posprice.create";
-			this.appActivity.getEventBus().send(createPriceAddress, prices, invRet -> {
-				if (invRet.succeeded()) {
+				if(prices == null || prices.isEmpty()){
 					priceFuture.complete();
-				} else {
-					Throwable errThrowable = invRet.cause();
-					String errMsgString = errThrowable.getMessage();
-					appActivity.getLogger().error(errMsgString, errThrowable);
-					priceFuture.fail(invRet.cause());
+					return;
 				}
-			});
+				// 创建门店价格表
+				String createPriceAddress = from_account + "." + this.appActivity.getService().getRealServiceName()
+						+ ".posprice.create";
+				this.appActivity.getEventBus().send(createPriceAddress, prices, ret -> {
+					if (ret.succeeded()) {
+						priceFuture.complete();
+					} else {
+						Throwable errThrowable = ret.cause();
+						String errMsgString = errThrowable.getMessage();
+						appActivity.getLogger().error(errMsgString, errThrowable);
+						priceFuture.fail(ret.cause());
+					}
+				});
+			}
 		});
 	}
 
@@ -237,33 +242,48 @@ public class AllotInvConfirmHandler extends ActionHandlerImpl<JsonObject> {
 	 * 更新补货单
 	 * 
 	 * @param replenishment
+	 * @param shipment 
 	 * @param msg
 	 * @param replenishmentFuture
 	 */
-	private void updateReplenishment(JsonObject replenishment, OtoCloudBusMessage<JsonObject> msg) {
+	private void updateReplenishment(JsonObject replenishment, JsonObject shipment, OtoCloudBusMessage<JsonObject> msg) {
 		String from_account = this.appActivity.getAppInstContext().getAccount();
 		String invSrvName = this.appActivity.getDependencies().getJsonObject("salescenter_service")
 				.getString("service_name", "");
 		String getReplenishmentAddress = from_account + "." + invSrvName + "." + "channel-restocking.update4accept";
-		// 修改收货通知的标识
+		String shipment_id = shipment.getString("bo_id");
+		Map<String,JsonObject> rep_b2Shipment_b = new HashMap<>();//key:补货单表体code；value:发货单表体
+		JsonArray shipment_b_list = shipment.getJsonArray("details");
+		for (Object object : shipment_b_list) {
+			JsonObject detail = (JsonObject)object;
+			String key = detail.getString("rep_detail_code");
+			rep_b2Shipment_b.put(key, detail);
+		}
+		// 修改发货通知的标识
 		JsonArray replenishment_b = replenishment.getJsonArray("details");
 		for (Object object : replenishment_b) {
 			JsonObject detail = (JsonObject) object;
+			if(!rep_b2Shipment_b.containsKey(detail.getString("detail_code"))){
+				continue;
+			}
 			JsonArray replenishment_s = detail.getJsonArray("shipments");
 			if (replenishment_s == null || replenishment_s.isEmpty()) {
 				continue;
 			}
 			for (Object object2 : replenishment_s) {
 				JsonObject detail_s = (JsonObject) object2;
-				if (detail_s.getBoolean("accept_completed")) {
+				if (!detail_s.getString("ship_code").equals(shipment.getString("bo_id"))) {
 					continue;
 				}
 				detail_s.put("accept_completed", true);
+				JsonObject shipment_detail = rep_b2Shipment_b.get(detail.getString("detail_code"));
+				detail_s.put("accept_quantity", shipment_detail.getValue("accept_quantity"));
+				detail_s.put("reject_quantity", shipment_detail.getValue("reject_quantity"));
 			}
 		}
 		this.appActivity.getEventBus().send(getReplenishmentAddress, replenishment, ret -> {
 			if (ret.succeeded()) {
-				msg.reply(ret.result());
+				msg.reply(ret.result().body());
 			} else {
 				Throwable errThrowable = ret.cause();
 				String errMsgString = errThrowable.getMessage();
@@ -286,7 +306,7 @@ public class AllotInvConfirmHandler extends ActionHandlerImpl<JsonObject> {
 				+ ".accept.accept";
 		this.appActivity.getEventBus().send(getAcceptAddress, accept, invRet -> {
 			if (invRet.succeeded()) {
-				acceptFuture.complete((JsonObject) invRet.result());
+				acceptFuture.complete((JsonObject) invRet.result().body());
 			} else {
 				Throwable errThrowable = invRet.cause();
 				String errMsgString = errThrowable.getMessage();
@@ -311,7 +331,7 @@ public class AllotInvConfirmHandler extends ActionHandlerImpl<JsonObject> {
 		handlerDescriptor.setRestApiURI(uri);
 
 		// 状态变化定义
-		BizStateSwitchDesc bizStateSwitchDesc = new BizStateSwitchDesc(BizRootType.BIZ_OBJECT, "created", "confirmed");
+		BizStateSwitchDesc bizStateSwitchDesc = new BizStateSwitchDesc(BizRootType.BIZ_OBJECT, AllotInvConstant.CREATE_STATUS, AllotInvConstant.CONFIRM_STATUS);
 		bizStateSwitchDesc.setWebExpose(true); // 是否向web端发布事件
 		actionDescriptor.setBizStateSwitch(bizStateSwitchDesc);
 

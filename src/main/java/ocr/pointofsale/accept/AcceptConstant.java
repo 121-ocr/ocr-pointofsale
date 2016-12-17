@@ -11,6 +11,8 @@ public class AcceptConstant {
 	public static final String CREATE_ADDRESS = "create";
 	//收货通知查询地址
 	public static final String QUERY_ADDRESS = "query";
+	//收货通知查询地址
+	public static final String ACCEPT_ADDRESS = "accept";
 	
 	//创建状态
 	public static final String CREATE_STATUS = "created";
