@@ -150,7 +150,7 @@ public class AllotInvConfirmHandler extends ActionHandlerImpl<JsonObject> {
 			param.put("bo_id", shipment.getString("bo_id"));
 			param.put("goodaccount", detailO.getJsonObject("goods").getString("account"));
 		
-			param.put("onhandnum", detailO.getValue("accept_quantity"));
+			param.put("onhandnum", detailO.getJsonObject("accept_info").getValue("accept_quantity"));
 			
 			paramList.add(param);
 		}
@@ -276,9 +276,9 @@ public class AllotInvConfirmHandler extends ActionHandlerImpl<JsonObject> {
 					continue;
 				}
 				detail_s.put("accept_completed", true);
-				JsonObject shipment_detail = rep_b2Shipment_b.get(detail.getString("detail_code"));
-				detail_s.put("accept_quantity", shipment_detail.getValue("accept_quantity"));
-				detail_s.put("reject_quantity", shipment_detail.getValue("reject_quantity"));
+				JsonObject accept_info = rep_b2Shipment_b.get(detail.getString("detail_code")).getJsonObject("accept_info");
+				detail_s.put("accept_quantity", accept_info.getValue("accept_quantity"));
+				detail_s.put("reject_quantity", accept_info.getValue("reject_quantity"));
 			}
 		}
 		this.appActivity.getEventBus().send(getReplenishmentAddress, replenishment, ret -> {
