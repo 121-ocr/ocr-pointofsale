@@ -33,7 +33,7 @@ public class POSPriceComponent extends AppActivityImpl {
 	@Override
 	public List<BizRoleDescriptor> exposeBizRolesDesc() {
 		// TODO Auto-generated method stub
-		BizRoleDescriptor bizRole = new BizRoleDescriptor("2", "核心企业");
+		BizRoleDescriptor bizRole = new BizRoleDescriptor("3", "门店渠道");
 		
 		List<BizRoleDescriptor> ret = new ArrayList<BizRoleDescriptor>();
 		ret.add(bizRole);

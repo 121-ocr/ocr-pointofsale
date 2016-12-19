@@ -6,7 +6,9 @@ import java.util.List;
 import ocr.pointofsale.accept.AcceptComponent;
 import ocr.pointofsale.allotinv.AllotInvComponent;
 import ocr.pointofsale.posprice.POSPriceComponent;
+import ocr.pointofsale.replenishment.ReplenishmentComponent;
 import ocr.pointofsale.saleorder.SaleOrderComponent;
+import ocr.pointofsale.shipment.ShipmentComponent;
 import otocloud.framework.app.engine.AppServiceImpl;
 import otocloud.framework.app.engine.WebServer;
 import otocloud.framework.app.function.AppActivity;
@@ -47,8 +49,11 @@ public class PointOfSaleService extends AppServiceImpl
 		POSPriceComponent priceCom = new POSPriceComponent();
 		retActivities.add(priceCom);
 		
-		AcceptComponent acceptCom = new AcceptComponent();
-		retActivities.add(acceptCom);
+		ReplenishmentComponent replenishmentComponent = new ReplenishmentComponent();
+		retActivities.add(replenishmentComponent);
+		
+		ShipmentComponent shipmentComponent = new ShipmentComponent();
+		retActivities.add(shipmentComponent);
 		
 		return retActivities;
 	}

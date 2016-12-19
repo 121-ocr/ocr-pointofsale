@@ -1,4 +1,4 @@
-package ocr.pointofsale.allotinv;
+package ocr.pointofsale.replenishment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,24 +9,24 @@ import otocloud.framework.core.OtoCloudEventDescriptor;
 import otocloud.framework.core.OtoCloudEventHandlerRegistry;
 
 /**
- * 补货调拨入库单组件
+ * 收货通知组件
  * @author wanghw
  *
  */
-public class AllotInvComponent extends AppActivityImpl {
+public class ReplenishmentComponent extends AppActivityImpl {
 
 	//业务活动组件名
 	@Override
 	public String getName() {
 		// TODO Auto-generated method stub
-		return "allotinv";
+		return "replenishment-mgr";
 	}
 	
 	//业务活动组件要处理的核心业务对象
 	@Override
 	public String getBizObjectType() {
 		// TODO Auto-generated method stub
-		return "bp_allotinv";
+		return "bp_replenishments";
 	}
 
 	//发布此业务活动关联的业务角色
@@ -54,12 +54,12 @@ public class AllotInvComponent extends AppActivityImpl {
 		// TODO Auto-generated method stub
 		List<OtoCloudEventHandlerRegistry> ret = new ArrayList<OtoCloudEventHandlerRegistry>();
 
-		AllotInvConfirmHandler allotInvConfirmHandler = new AllotInvConfirmHandler(this);
-		ret.add(allotInvConfirmHandler);
+		ReplenishmentCreateHandler replenishmentCreateHandler = new ReplenishmentCreateHandler(this);
+		ret.add(replenishmentCreateHandler);
 		
-		AllotInvQueryHandler allotInvQueryHandler = new AllotInvQueryHandler(this);
-		ret.add(allotInvQueryHandler);
-		
+		ReplenishmentQueryHandler replenishmentQueryHandler = new ReplenishmentQueryHandler(this);
+		ret.add(replenishmentQueryHandler);		
+	
 		return ret;
 	}
 

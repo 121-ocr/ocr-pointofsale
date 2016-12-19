@@ -7,10 +7,10 @@ import io.vertx.core.json.JsonObject;
 import otocloud.common.ActionContextTransfomer;
 import otocloud.common.ActionURI;
 import otocloud.framework.app.function.ActionDescriptor;
-import otocloud.framework.app.function.ActionHandlerImpl;
 import otocloud.framework.app.function.AppActivityImpl;
 import otocloud.framework.app.function.BizRootType;
 import otocloud.framework.app.function.BizStateSwitchDesc;
+import otocloud.framework.app.function.CDOHandlerImpl;
 import otocloud.framework.core.HandlerDescriptor;
 import otocloud.framework.core.OtoCloudBusMessage;
 
@@ -20,7 +20,7 @@ import otocloud.framework.core.OtoCloudBusMessage;
  * @author wanghw
  *
  */
-public class AcceptCreateHandler extends ActionHandlerImpl<JsonObject> {
+public class AcceptCreateHandler extends CDOHandlerImpl<JsonObject> {
 
 	public AcceptCreateHandler(AppActivityImpl appActivity) {
 		super(appActivity);
@@ -69,7 +69,7 @@ public class AcceptCreateHandler extends ActionHandlerImpl<JsonObject> {
 		// 当前操作人信息
 		JsonObject actor = ActionContextTransfomer.fromMessageHeaderToActor(headerMap);
 		
-		String partnerAcct = bo.getJsonObject("supplier").getString("link_account"); 
+		//String partnerAcct = bo.getJsonObject("supplier").getString("link_account"); 
 		
 		if(replenishmentsId != null && !replenishmentsId.isEmpty()){		
 			JsonObject queryJson = new JsonObject().put("bo.replenishments_id", replenishmentsId);
@@ -102,7 +102,7 @@ public class AcceptCreateHandler extends ActionHandlerImpl<JsonObject> {
 				}
 				// 记录事实对象（业务数据），会根据ActionDescriptor定义的状态机自动进行状态变化，并发出状态变化业务事件
 				// 自动查找数据源，自动进行分表处理
-				this.recordFactData(appActivity.getBizObjectType(), bo, null, actor, partnerAcct, null, result -> {
+				this.recordFactData(appActivity.getBizObjectType(), bo, null, actor, null, result -> {
 					if (result.succeeded()) {
 						msg.reply(bo); //返回BO						
 					} else {
@@ -116,7 +116,7 @@ public class AcceptCreateHandler extends ActionHandlerImpl<JsonObject> {
 		}else{
 			// 记录事实对象（业务数据），会根据ActionDescriptor定义的状态机自动进行状态变化，并发出状态变化业务事件
 			// 自动查找数据源，自动进行分表处理
-			this.recordFactData(appActivity.getBizObjectType(), bo, null, actor, partnerAcct, null, result -> {
+			this.recordFactData(appActivity.getBizObjectType(), bo, null, actor, null, result -> {
 				if (result.succeeded()) {
 					msg.reply(bo); //返回BO						
 				} else {

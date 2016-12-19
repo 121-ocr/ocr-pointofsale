@@ -1,4 +1,4 @@
-package ocr.pointofsale.allotinv;
+package ocr.pointofsale.shipment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,24 +9,24 @@ import otocloud.framework.core.OtoCloudEventDescriptor;
 import otocloud.framework.core.OtoCloudEventHandlerRegistry;
 
 /**
- * 补货调拨入库单组件
+ * 发货单组件
  * @author wanghw
  *
  */
-public class AllotInvComponent extends AppActivityImpl {
+public class ShipmentComponent extends AppActivityImpl {
 
 	//业务活动组件名
 	@Override
 	public String getName() {
 		// TODO Auto-generated method stub
-		return "allotinv";
+		return "shipment-mgr";
 	}
 	
 	//业务活动组件要处理的核心业务对象
 	@Override
 	public String getBizObjectType() {
 		// TODO Auto-generated method stub
-		return "bp_allotinv";
+		return "bp_shipment";
 	}
 
 	//发布此业务活动关联的业务角色
@@ -54,11 +54,17 @@ public class AllotInvComponent extends AppActivityImpl {
 		// TODO Auto-generated method stub
 		List<OtoCloudEventHandlerRegistry> ret = new ArrayList<OtoCloudEventHandlerRegistry>();
 
-		AllotInvConfirmHandler allotInvConfirmHandler = new AllotInvConfirmHandler(this);
-		ret.add(allotInvConfirmHandler);
+		ShipmentBatchCreateHandler shipMentCreateHandler = new ShipmentBatchCreateHandler(this);
+		ret.add(shipMentCreateHandler);
 		
-		AllotInvQueryHandler allotInvQueryHandler = new AllotInvQueryHandler(this);
-		ret.add(allotInvQueryHandler);
+		ShipmentQueryHandler shipmentQueryHandler = new ShipmentQueryHandler(this);
+		ret.add(shipmentQueryHandler);
+		
+		ShipmentFindOneHandler shipmentFindOneHandler = new ShipmentFindOneHandler(this);
+		ret.add(shipmentFindOneHandler);
+		
+		ShipmentCompleteHandler shipmentCompleteHandler = new ShipmentCompleteHandler(this);
+		ret.add(shipmentCompleteHandler);
 		
 		return ret;
 	}
