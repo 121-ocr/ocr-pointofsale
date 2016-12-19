@@ -57,6 +57,18 @@ public class ShipmentBatchCreateHandler extends CDOHandlerImpl<JsonArray> {
 		
 		return actionDescriptor;
 	}
+	
+	@Override
+	public JsonObject buildStubForCDO(JsonObject factData, String boId, String partnerAcct) {
+	    //记录最后状态事实对象
+    	JsonObject insert = new JsonObject();
+
+    	insert.put("partner", partnerAcct);
+    	insert.put("replenishments_id", factData.getString("replenishments_id"));
+    	insert.put("bo_id", boId);
+    	
+    	return insert;
+	}
 
 	@Override
 	public void handle(OtoCloudBusMessage<JsonArray> msg) {

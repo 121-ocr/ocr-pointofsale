@@ -22,11 +22,11 @@ import otocloud.framework.core.OtoCloudBusMessage;
  * @date 2016年11月15日
  * @author lijing
  */
-public class ShipmentQueryHandler extends CDOHandlerImpl<JsonObject> {
+public class QueryShipmentCreatedHandler extends CDOHandlerImpl<JsonObject> {
 	
-	public static final String ADDRESS = "find_all";
+	public static final String ADDRESS = "find_created";
 
-	public ShipmentQueryHandler(AppActivityImpl appActivity) {
+	public QueryShipmentCreatedHandler(AppActivityImpl appActivity) {
 		super(appActivity);
 		// TODO Auto-generated constructor stub
 	}
@@ -43,18 +43,21 @@ public class ShipmentQueryHandler extends CDOHandlerImpl<JsonObject> {
 	public void handle(OtoCloudBusMessage<JsonObject> msg) {
 		
 		JsonObject queryParams = msg.body();
+		
+		List<String> statusList = new ArrayList<>();
+		statusList.add(ShipmentConstant.CREATE_STATUS);
 	    
-	    this.queryLatestFactDataList(appActivity.getBizObjectType(), ShipmentConstant.CREATE_STATUS, queryParams, null, findRet->{
+	    this.queryLatestFactDataList(appActivity.getBizObjectType(), statusList, null, queryParams, null, findRet->{
 	        if (findRet.succeeded()) {
         	
 				//msg.reply(findRet.result());
-				JsonObject retObj = findRet.result();
-				JsonArray stubBoList = retObj.getJsonArray("datas");
+				List<JsonObject> stubBoList = findRet.result();
+				//JsonArray stubBoList = retObj.getJsonArray("datas");
 				if(stubBoList != null && stubBoList.size() > 0){
 					List<Future> futures = new ArrayList<Future>();
 					//List<JsonObject> retList = new ArrayList<>();
-					for(Object item : stubBoList){
-						JsonObject stubBo = (JsonObject)item;
+					for(JsonObject stubBo : stubBoList){
+						//JsonObject stubBo = (JsonObject)item;
 						Future<JsonObject> cdoFuture = Future.future();
 						futures.add(cdoFuture);						
 
@@ -64,7 +67,7 @@ public class ShipmentQueryHandler extends CDOHandlerImpl<JsonObject> {
 						
 						this.queryLatestCDO(BizRoleDirection.TO, partner, appActivity.getBizObjectType(), 
 								boId, null, cdoRet->{
-									if (findRet.succeeded()) {
+									if (cdoRet.succeeded()) {
 										cdoFuture.complete(cdoRet.result());
 									}else{
 										cdoFuture.fail(cdoRet.cause());
@@ -86,13 +89,13 @@ public class ShipmentQueryHandler extends CDOHandlerImpl<JsonObject> {
 							}
 						}
 						
-						retObj.put("datas", retList);
+						//retObj.put("datas", retList);
 						
-						msg.reply(retObj);
+						msg.reply(retList);
 					});
 					
 				}else{
-					msg.reply(retObj);
+					msg.reply(null);
 				}
 	        	
 	        } else {
