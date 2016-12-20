@@ -76,6 +76,8 @@ public class ReplenishmentRecordReceiptHandler extends CDOHandlerImpl<JsonObject
 				JsonObject replenishment = replenishmentBo.getJsonObject("bo");
 				String currentStatus = replenishmentBo.getString("current_state");
 				
+				String repStatus = replenishmentBo.getString("current_state");
+				
 		   		Map<String,JsonObject> rep_b2Shipment_b = new HashMap<>();//key:补货单表体code；value:发货单表体
 	    		JsonArray shipment_b_list = shipment.getJsonArray("details");
 	    		for (Object object : shipment_b_list) {
@@ -83,6 +85,8 @@ public class ReplenishmentRecordReceiptHandler extends CDOHandlerImpl<JsonObject
 	    			String key = detail.getString("rep_detail_code");
 	    			rep_b2Shipment_b.put(key, detail);
 	    		}
+	    		
+	    		Boolean isCompleted = true;
 	    		
 	    		JsonArray replenishment_b = replenishment.getJsonArray("details");
 	    		for (int i=0; i<replenishment_b.size(); i++) {
@@ -101,6 +105,19 @@ public class ReplenishmentRecordReceiptHandler extends CDOHandlerImpl<JsonObject
 	    				JsonObject detail_s = (JsonObject)replenishment_s.getJsonObject(j);
 	    				String shipCode = detail_s.getString("ship_code");
 	    				if (!shipCode.equals(shipment.getString("bo_id"))) {
+	    					if(!detail_s.containsKey("accept_completed")){
+	    						isCompleted = false;
+	    					}else{
+	    						Object valueObj = detail_s.getValue("accept_completed");
+	    						if(valueObj == null){
+	    							isCompleted = false;
+	    						}else{
+	    							Boolean value = (Boolean)valueObj;
+	    							if(!value){
+	    								isCompleted = false;
+	    							}
+	    						}
+	    					}
 	    					continue;
 	    				}
 	    				
@@ -134,9 +151,22 @@ public class ReplenishmentRecordReceiptHandler extends CDOHandlerImpl<JsonObject
 			    				});
 		    		}
 	    		}
+	    		
+	    		if(isCompleted){
+	    			ReplenishmentCompleteHandler replenishmentCompleteHandler = new ReplenishmentCompleteHandler(this.appActivity);
+	    			replenishmentCompleteHandler.processComplete(replenishmentsId, partnerAcct, actor, ret->{
+	    				
+	    				if (ret.succeeded()) {
+	    					msg.reply("ok");						
+	    				}else{
+	    					Throwable errThrowable = ret.cause();
+	    					String errMsgString = errThrowable.getMessage();
+	    					appActivity.getLogger().error(errMsgString, errThrowable);
+	    					msg.fail(100, errMsgString);	    				}
+	    				
+	    			});
 
-				msg.reply("ok");
-				
+	    		}
 				
 			}else{
 				Throwable errThrowable = next.cause();

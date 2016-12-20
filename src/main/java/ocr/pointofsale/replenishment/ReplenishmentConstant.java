@@ -11,8 +11,8 @@ public class ReplenishmentConstant {
 	public static final String CREATE_ADDRESS = "create";
 	//收货通知查询地址
 	public static final String QUERY_ADDRESS = "query";
-	//收货通知查询地址
-	//public static final String ACCEPT_ADDRESS = "accept";
+	
+	public static final String COMPLETED_ADDRESS = "complete";
 	
 	public static final String RECEIPT_ADDRESS = "record-receipt";
 	
