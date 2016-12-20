@@ -86,6 +86,10 @@
 									"salescenter_service": 
 									{
 										"service_name": "ocr-sales-center"
+									},
+									"inventorycenter_service": 
+									{
+										"service_name": "ocr-inventorycenter"
 									}
 								}
 							}

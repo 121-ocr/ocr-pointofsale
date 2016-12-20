@@ -3,7 +3,6 @@ package ocr.pointofsale;
 import java.util.ArrayList;
 import java.util.List;
 
-import ocr.pointofsale.accept.AcceptComponent;
 import ocr.pointofsale.allotinv.AllotInvComponent;
 import ocr.pointofsale.posprice.POSPriceComponent;
 import ocr.pointofsale.replenishment.ReplenishmentComponent;

@@ -60,11 +60,13 @@ public class ShipmentCompleteHandler extends CDOHandlerImpl<JsonObject> {
 	public void handle(OtoCloudBusMessage<JsonObject> msg) {
 		MultiMap headerMap = msg.headers();
 		
-		JsonObject so = msg.body();
+		JsonObject body = msg.body();
+		JsonObject shipmentBo = body.getJsonObject("bo");
 		
-    	String boId = so.getString("bo_id");
+    	String boId = body.getString("bo_id");
     	
-    	String partnerAcct = so.getJsonObject("channel").getString("link_account"); //交易单据一般要记录协作方
+    	String partnerAcct = body.getString("from_account");	
+
     	
     	//当前操作人信息
     	JsonObject actor = ActionContextTransfomer.fromMessageHeaderToActor(headerMap); 
@@ -72,15 +74,15 @@ public class ShipmentCompleteHandler extends CDOHandlerImpl<JsonObject> {
     	   	
     	//记录事实对象（业务数据），会根据ActionDescriptor定义的状态机自动进行状态变化，并发出状态变化业务事件
     	//自动查找数据源，自动进行分表处理
-    	this.recordCDO(BizRoleDirection.TO, partnerAcct, appActivity.getBizObjectType(), so, boId, actor, 
+    	this.recordCDO(BizRoleDirection.TO, partnerAcct, appActivity.getBizObjectType(), shipmentBo, boId, actor, 
     			cdoResult->{
     		if (cdoResult.succeeded()) {	
-    			String stubBoId = so.getString("bo_id");
-    			JsonObject stubBo = this.buildStubForCDO(so, stubBoId, partnerAcct);
+    			String stubBoId = shipmentBo.getString("bo_id");
+    			JsonObject stubBo = this.buildStubForCDO(shipmentBo, stubBoId, partnerAcct);
     			
     	    	this.recordFactData(appActivity.getBizObjectType(), stubBo, stubBoId, actor, null, result->{
     				if (result.succeeded()) {				
-    					msg.reply(so);
+    					msg.reply(shipmentBo);
     				} else {
     					Throwable errThrowable = result.cause();
     					String errMsgString = errThrowable.getMessage();

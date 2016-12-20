@@ -21,7 +21,7 @@ import otocloud.framework.core.HandlerDescriptor;
 import otocloud.framework.core.OtoCloudBusMessage;
 
 /**
- * 确认收货操作 0，更新收货通知 1， 更新补货单 2， 创建价格表 3， 更新现存量
+ * 确认收货操作 0，更新发货单完成  1， 更新补货单收货量  2， 创建价格表 3， 更新现存量
  * 
  * @author wanghw
  *
@@ -44,26 +44,29 @@ public class AllotInvConfirmHandler extends ActionHandlerImpl<JsonObject> {
 	public void handle(OtoCloudBusMessage<JsonObject> msg) {
 		List<Future> futures = new ArrayList<>();
 		// 更新收货通知
-		JsonObject accept = msg.body();
-		JsonObject replenishment = accept.getJsonObject("replenishment").getJsonObject("bo");
-		JsonObject shipment = accept.getJsonObject("shipment").getJsonObject("bo");
-		accept.remove("replenishment");
+		JsonObject body = msg.body();
+		JsonObject replenishment = body.getJsonObject("replenishment");
+		JsonObject shipment = body.getJsonObject("shipment");
+		JsonObject replenishmentBo = replenishment.getJsonObject("bo");
+		JsonObject shipmentBo = shipment.getJsonObject("bo");
+		
+		//设置发货单完成状态
 		Future<JsonObject> acceptFuture = Future.future();
 		futures.add(acceptFuture);
-		completeAccept(accept, acceptFuture);
+		completeShipment(shipment, acceptFuture);
 		// 创建价格表
 		Future<JsonObject> priceFuture = Future.future();
 		futures.add(priceFuture);
-		createPrices(replenishment, priceFuture);
+		createPrices(replenishmentBo, priceFuture);
 		// 更新现存量
-		JsonArray invOnhand = getInvOnhandObject(shipment);
+		JsonArray invOnhand = getInvOnhandObject(shipmentBo);
 		Future<JsonObject> invOnhandFuture = Future.future();
 		futures.add(invOnhandFuture);
 		createInvOnhand(invOnhand, invOnhandFuture);
-		// 更新发货单
+/*		// 更新发货单
 		Future<JsonObject> shipmentFuture = Future.future();
 		futures.add(shipmentFuture);
-		completeShipment(shipment, shipmentFuture);
+		completeShipment(shipmentBo, shipmentFuture);*/
 
 		// 组合
 		CompositeFuture.join(futures).setHandler(ar -> {
@@ -79,7 +82,7 @@ public class AllotInvConfirmHandler extends ActionHandlerImpl<JsonObject> {
 				}
 			}
 			// 更新补货单
-			updateReplenishment(replenishment,shipment,msg);
+			updateReplenishment(shipment,msg);
 		});
 	}
 
@@ -89,10 +92,11 @@ public class AllotInvConfirmHandler extends ActionHandlerImpl<JsonObject> {
 	 * @param shipmentFuture
 	 */
 	private void completeShipment(JsonObject shipment, Future<JsonObject> shipmentFuture) {
-		String from_account = this.appActivity.getAppInstContext().getAccount();
-		String invSrvName = this.appActivity.getDependencies().getJsonObject("salescenter_service")
-				.getString("service_name", "");
-		String updateShipmentAddress = from_account + "." + invSrvName + "." + "channel-restocking.complete";
+		String account = this.appActivity.getAppInstContext().getAccount();
+		String srvName = this.appActivity.getService().getRealServiceName();
+		/*String invSrvName = this.appActivity.getDependencies().getJsonObject("salescenter_service")
+				.getString("service_name", "");*/
+		String updateShipmentAddress = account + "." + srvName + "." + "shipment-mgr.complete";
 		
 		this.appActivity.getEventBus().send(updateShipmentAddress, shipment, ret -> {
 			if (ret.succeeded()) {
@@ -145,7 +149,7 @@ public class AllotInvConfirmHandler extends ActionHandlerImpl<JsonObject> {
 			param.put("sku", detailO.getJsonObject("goods").getString("product_sku_code"));
 			param.put("invbatchcode", detailO.getString("invbatchcode"));
 			param.put("warehousecode", shipment.getJsonObject("target_warehouse").getString("code"));
-			param.put("status", "in");
+			param.put("status", "IN");
 			param.put("biz_data_type", "bp_shipment");
 			param.put("bo_id", shipment.getString("bo_id"));
 			param.put("goodaccount", detailO.getJsonObject("goods").getString("account"));
@@ -246,42 +250,12 @@ public class AllotInvConfirmHandler extends ActionHandlerImpl<JsonObject> {
 	 * @param msg
 	 * @param replenishmentFuture
 	 */
-	private void updateReplenishment(JsonObject replenishment, JsonObject shipment, OtoCloudBusMessage<JsonObject> msg) {
+	private void updateReplenishment(JsonObject shipment, OtoCloudBusMessage<JsonObject> msg) {
 		String from_account = this.appActivity.getAppInstContext().getAccount();
-		String invSrvName = this.appActivity.getDependencies().getJsonObject("salescenter_service")
-				.getString("service_name", "");
-		String getReplenishmentAddress = from_account + "." + invSrvName + "." + "channel-restocking.update4accept";
-		String shipment_id = shipment.getString("bo_id");
-		Map<String,JsonObject> rep_b2Shipment_b = new HashMap<>();//key:补货单表体code；value:发货单表体
-		JsonArray shipment_b_list = shipment.getJsonArray("details");
-		for (Object object : shipment_b_list) {
-			JsonObject detail = (JsonObject)object;
-			String key = detail.getString("rep_detail_code");
-			rep_b2Shipment_b.put(key, detail);
-		}
-		// 修改发货通知的标识
-		JsonArray replenishment_b = replenishment.getJsonArray("details");
-		for (Object object : replenishment_b) {
-			JsonObject detail = (JsonObject) object;
-			if(!rep_b2Shipment_b.containsKey(detail.getString("detail_code"))){
-				continue;
-			}
-			JsonArray replenishment_s = detail.getJsonArray("shipments");
-			if (replenishment_s == null || replenishment_s.isEmpty()) {
-				continue;
-			}
-			for (Object object2 : replenishment_s) {
-				JsonObject detail_s = (JsonObject) object2;
-				if (!detail_s.getString("ship_code").equals(shipment.getString("bo_id"))) {
-					continue;
-				}
-				detail_s.put("accept_completed", true);
-				JsonObject accept_info = rep_b2Shipment_b.get(detail.getString("detail_code")).getJsonObject("accept_info");
-				detail_s.put("accept_quantity", accept_info.getValue("accept_quantity"));
-				detail_s.put("reject_quantity", accept_info.getValue("reject_quantity"));
-			}
-		}
-		this.appActivity.getEventBus().send(getReplenishmentAddress, replenishment, ret -> {
+		String srvName = this.appActivity.getService().getRealServiceName();
+		String replenishmentAddress = from_account + "." + srvName + "." + "replenishment-mgr.record-receipt";
+
+		this.appActivity.getEventBus().send(replenishmentAddress, shipment, ret -> {
 			if (ret.succeeded()) {
 				msg.reply(ret.result().body());
 			} else {
@@ -299,7 +273,7 @@ public class AllotInvConfirmHandler extends ActionHandlerImpl<JsonObject> {
 	 * @param accept
 	 * @param acceptFuture
 	 */
-	private void completeAccept(JsonObject accept, Future<JsonObject> acceptFuture) {
+/*	private void completeAccept(JsonObject accept, Future<JsonObject> acceptFuture) {
 		String from_account = this.appActivity.getAppInstContext().getAccount();
 		// 按照分页条件查询收货通知
 		String getAcceptAddress = from_account + "." + this.appActivity.getService().getRealServiceName()
@@ -315,7 +289,7 @@ public class AllotInvConfirmHandler extends ActionHandlerImpl<JsonObject> {
 			}
 		});
 
-	}
+	}*/
 
 	/**
 	 * {@inheritDoc}
