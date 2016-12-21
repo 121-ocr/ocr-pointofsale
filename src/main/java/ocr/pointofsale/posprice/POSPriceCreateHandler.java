@@ -1,18 +1,14 @@
 package ocr.pointofsale.posprice;
 
-import io.vertx.core.AsyncResult;
-import io.vertx.core.Future;
-import io.vertx.core.Handler;
 import io.vertx.core.http.HttpMethod;
-import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
-import ocr.common.handler.SampleDocBaseHandler;
+import io.vertx.ext.mongo.UpdateOptions;
 import otocloud.common.ActionURI;
 import otocloud.framework.app.function.ActionDescriptor;
+import otocloud.framework.app.function.ActionHandlerImpl;
 import otocloud.framework.app.function.AppActivityImpl;
-import otocloud.framework.app.function.BizRootType;
-import otocloud.framework.app.function.BizStateSwitchDesc;
 import otocloud.framework.core.HandlerDescriptor;
+import otocloud.framework.core.OtoCloudBusMessage;
 
 /**
  * 门店代销价格创建操作
@@ -20,7 +16,7 @@ import otocloud.framework.core.HandlerDescriptor;
  * @author wanghw
  *
  */
-public class POSPriceCreateHandler extends SampleDocBaseHandler {
+public class POSPriceCreateHandler extends ActionHandlerImpl<JsonObject> {
 
 	public POSPriceCreateHandler(AppActivityImpl appActivity) {
 		super(appActivity);
@@ -47,12 +43,43 @@ public class POSPriceCreateHandler extends SampleDocBaseHandler {
 		ActionURI uri = new ActionURI(getEventAddress(), HttpMethod.POST);
 		handlerDescriptor.setRestApiURI(uri);
 
-		// 状态变化定义
+/*		// 状态变化定义
 		BizStateSwitchDesc bizStateSwitchDesc = new BizStateSwitchDesc(BizRootType.BIZ_OBJECT, null, POSPriceConstant.CREATE_STATUS);
 		bizStateSwitchDesc.setWebExpose(true); // 是否向web端发布事件
 		actionDescriptor.setBizStateSwitch(bizStateSwitchDesc);
-
+*/
 		return actionDescriptor;
+	}
+
+	@Override
+	public void handle(OtoCloudBusMessage<JsonObject> event) {
+		
+		JsonObject body = event.body();
+		
+		JsonObject query = body.getJsonObject("query");
+		JsonObject update = body.getJsonObject("update");
+		
+		UpdateOptions opt = new UpdateOptions();
+		opt.setUpsert(true);
+		
+		this.appActivity.getAppDatasource().getMongoClient().updateCollectionWithOptions(appActivity.getDBTableName(this.appActivity.getBizObjectType()), 
+				query, update, opt, resultHandler->{
+					
+					if (resultHandler.succeeded()) {
+						event.reply(resultHandler.result().toJson());
+					} else {
+						Throwable errThrowable = resultHandler.cause();
+						String errMsgString = errThrowable.getMessage();
+						appActivity.getLogger().error(errMsgString, errThrowable);
+						event.fail(100, errMsgString);
+					}
+					
+				});
+		
+		
+		
+		
+		
 	}
 
 }

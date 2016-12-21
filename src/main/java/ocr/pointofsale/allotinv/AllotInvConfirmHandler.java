@@ -1,9 +1,7 @@
 package ocr.pointofsale.allotinv;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import io.vertx.core.CompositeFuture;
 import io.vertx.core.Future;
@@ -160,6 +158,50 @@ public class AllotInvConfirmHandler extends ActionHandlerImpl<JsonObject> {
 		}
 		return paramList;
 	}
+	
+	
+	private void createPrices(JsonObject replenishment, Future<JsonObject> priceFuture) {
+		JsonArray details = replenishment.getJsonArray("details");
+		
+		String from_account = this.appActivity.getAppInstContext().getAccount();
+		// 创建门店价格表
+		String createPriceAddress = from_account + "." + this.appActivity.getService().getRealServiceName()
+				+ ".posprice.create";
+
+		// 首先按照sku+货主+批次查询已存在的价格
+		for (int i = 0; i < details.size(); i++) {
+			JsonObject detail_obj = (JsonObject) details.getValue(i);
+			
+			JsonObject query = new JsonObject();
+			query.put("goods.product_sku_code", detail_obj.getJsonObject("goods").getString("product_sku_code"));
+			query.put("invbatchcode", detail_obj.getString("invbatchcode"));
+			query.put("goods.account", detail_obj.getJsonObject("goods").getString("account"));
+			
+			JsonObject price = new JsonObject();
+			price.put("goods", detail_obj.getJsonObject("goods"));
+			price.put("invbatchcode", detail_obj.getString("invbatchcode"));
+			price.put("supply_price", detail_obj.getJsonObject("supply_price"));
+			price.put("retail_price", detail_obj.getJsonObject("retail_price"));
+			price.put("commission", detail_obj.getJsonObject("commission"));
+			
+			JsonObject params = new JsonObject().put("query", query)
+												.put("update", new JsonObject().put("$set", price));
+			// 创建门店价格表
+			this.appActivity.getEventBus().send(createPriceAddress, params, ret -> {
+				if (ret.succeeded()) {
+					//priceFuture.complete();
+				} else {
+					Throwable errThrowable = ret.cause();
+					String errMsgString = errThrowable.getMessage();
+					appActivity.getLogger().error(errMsgString, errThrowable);
+					//priceFuture.fail(ret.cause());
+				}
+			});
+		}
+		
+		priceFuture.complete();
+
+	}
 
 	/**
 	 * 保存价格表
@@ -167,7 +209,7 @@ public class AllotInvConfirmHandler extends ActionHandlerImpl<JsonObject> {
 	 * @param replenishment
 	 * @return
 	 */
-	private void createPrices(JsonObject replenishment, Future<JsonObject> priceFuture) {
+/*	private void createPrices(JsonObject replenishment, Future<JsonObject> priceFuture) {
 		JsonArray details = replenishment.getJsonArray("details");
 		JsonObject query_con = new JsonObject();
 		JsonArray query_item = new JsonArray();
@@ -181,7 +223,8 @@ public class AllotInvConfirmHandler extends ActionHandlerImpl<JsonObject> {
 			temp.put("goods.account", detail_obj.getJsonObject("goods").getString("account"));
 
 			query_item.add(temp);
-		}
+		}		
+		
 		String from_account = this.appActivity.getAppInstContext().getAccount();
 		// 创建门店价格表
 		String getPriceAddress = from_account + "." + this.appActivity.getService().getRealServiceName()
@@ -191,39 +234,55 @@ public class AllotInvConfirmHandler extends ActionHandlerImpl<JsonObject> {
 			if (invRet.succeeded()) {
 				// 已存在的价格
 				JsonObject data = (JsonObject) invRet.result().body();
-				JsonArray datas = data.getJsonArray("result");
-				// 构建prices
-				JsonArray prices = new JsonArray();
-				for (Object detail : details) {
-					JsonObject detail_obj = (JsonObject) detail;
-					JsonObject price = new JsonObject();
-
-					price.put("goods", detail_obj.getJsonObject("goods"));
-					price.put("invbatchcode", detail_obj.getString("invbatchcode"));
-					price.put("supply_price", detail_obj.getJsonObject("supply_price"));
-					price.put("retail_price", detail_obj.getJsonObject("retail_price"));
-					price.put("commission", detail_obj.getJsonObject("commission"));
-
-					boolean isExist = false;
-					for (Object obj : datas) {
-						JsonObject temp = (JsonObject) obj;
-						if (price.getJsonObject("goods").getString("product_sku_code")
-								.equals(temp.getJsonObject("goods").getString("product_sku_code"))
-								&& price.getJsonObject("goods").getString("account")
-										.equals(temp.getJsonObject("goods").getString("account"))
-								&& price.getString("invbatchcode").equals(temp.getString("invbatchcode"))) {
-							isExist = true;
-							break;
+				if(data != null){
+					JsonArray datas = data.getJsonArray("result");
+					// 构建prices
+					JsonArray prices = new JsonArray();
+					for (Object detail : details) {
+						JsonObject detail_obj = (JsonObject) detail;
+						JsonObject price = new JsonObject();
+	
+						price.put("goods", detail_obj.getJsonObject("goods"));
+						price.put("invbatchcode", detail_obj.getString("invbatchcode"));
+						price.put("supply_price", detail_obj.getJsonObject("supply_price"));
+						price.put("retail_price", detail_obj.getJsonObject("retail_price"));
+						price.put("commission", detail_obj.getJsonObject("commission"));
+	
+						boolean isExist = false;
+						for (Object obj : datas) {
+							JsonObject temp = (JsonObject) obj;
+							JsonObject tmpGoods = temp.getJsonObject("goods");
+							JsonObject goodsJs = price.getJsonObject("goods");
+							if (goodsJs.getString("product_sku_code")
+									.equals(tmpGoods.getString("product_sku_code"))
+									&& goodsJs.getString("account")
+											.equals(tmpGoods.getString("account"))) {
+								
+								if(temp.containsKey("invbatchcode")){
+									if(price.containsKey("invbatchcode")){
+										if(price.getString("invbatchcode").equals(temp.getString("invbatchcode"))){
+											isExist = true;
+											break;
+										}
+									}								
+								}else{
+									if(!price.containsKey("invbatchcode")){
+										isExist = true;
+										break;
+									}
+								}
+	
+							}
 						}
+						if (isExist) {
+							continue;
+						}
+						prices.add(price);					
 					}
-					if (isExist) {
-						continue;
+					if(prices == null || prices.isEmpty()){
+						priceFuture.complete();
+						return;
 					}
-					prices.add(price);					
-				}
-				if(prices == null || prices.isEmpty()){
-					priceFuture.complete();
-					return;
 				}
 				// 创建门店价格表
 				String createPriceAddress = from_account + "." + this.appActivity.getService().getRealServiceName()
@@ -241,7 +300,7 @@ public class AllotInvConfirmHandler extends ActionHandlerImpl<JsonObject> {
 			}
 		});
 	}
-
+*/
 	/**
 	 * 更新补货单
 	 * 

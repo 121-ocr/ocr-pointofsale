@@ -76,7 +76,7 @@ public class ReplenishmentRecordReceiptHandler extends CDOHandlerImpl<JsonObject
 				JsonObject replenishment = replenishmentBo.getJsonObject("bo");
 				String currentStatus = replenishmentBo.getString("current_state");
 				
-				String repStatus = replenishmentBo.getString("current_state");
+				//String repStatus = replenishmentBo.getString("current_state");
 				
 		   		Map<String,JsonObject> rep_b2Shipment_b = new HashMap<>();//key:补货单表体code；value:发货单表体
 	    		JsonArray shipment_b_list = shipment.getJsonArray("details");
@@ -86,13 +86,16 @@ public class ReplenishmentRecordReceiptHandler extends CDOHandlerImpl<JsonObject
 	    			rep_b2Shipment_b.put(key, detail);
 	    		}
 	    		
-	    		Boolean isCompleted = true;
-	    		
+    		
 	    		JsonArray replenishment_b = replenishment.getJsonArray("details");
 	    		for (int i=0; i<replenishment_b.size(); i++) {
 	    			JsonObject detail = (JsonObject)replenishment_b.getJsonObject(i);
 	    			String detailCode = detail.getString("detail_code");
 	    			if(!rep_b2Shipment_b.containsKey(detailCode)){
+	    				continue;
+	    			}
+	    			
+	    			if(!detail.containsKey("shipments")){
 	    				continue;
 	    			}
 	    			JsonArray replenishment_s = detail.getJsonArray("shipments");
@@ -105,21 +108,10 @@ public class ReplenishmentRecordReceiptHandler extends CDOHandlerImpl<JsonObject
 	    				JsonObject detail_s = (JsonObject)replenishment_s.getJsonObject(j);
 	    				String shipCode = detail_s.getString("ship_code");
 	    				if (!shipCode.equals(shipment.getString("bo_id"))) {
-	    					if(!detail_s.containsKey("accept_completed")){
-	    						isCompleted = false;
-	    					}else{
-	    						Object valueObj = detail_s.getValue("accept_completed");
-	    						if(valueObj == null){
-	    							isCompleted = false;
-	    						}else{
-	    							Boolean value = (Boolean)valueObj;
-	    							if(!value){
-	    								isCompleted = false;
-	    							}
-	    						}
-	    					}
 	    					continue;
 	    				}
+	    				
+	    				detail_s.put("accept_completed", true);
 	    				
 			    		// 修改发货通知的标识
 			    		JsonObject queryJs = new JsonObject().put("bo_id", replenishmentsId)
@@ -152,6 +144,41 @@ public class ReplenishmentRecordReceiptHandler extends CDOHandlerImpl<JsonObject
 		    		}
 	    		}
 	    		
+	    		Boolean isCompleted = true;
+	    		for (int i=0; i<replenishment_b.size(); i++) {
+	    			JsonObject detail = (JsonObject)replenishment_b.getJsonObject(i);	    			
+
+	    			if(!detail.containsKey("shipments")){
+	    				isCompleted = false; //有未發貨的數據
+	    				continue;
+	    			}
+	    			JsonArray replenishment_s = detail.getJsonArray("shipments");
+	    			if (replenishment_s == null || replenishment_s.isEmpty()) {
+	    				isCompleted = false; //有未發貨的數據
+	    				continue;
+	    			}			    		
+	    			for (int j=0; j<replenishment_s.size(); j++) {
+	    			
+	    				JsonObject detail_s = (JsonObject)replenishment_s.getJsonObject(j);
+	    				
+    					if(!detail_s.containsKey("accept_completed")){
+    						isCompleted = false;
+    					}else{
+    						Object valueObj = detail_s.getValue("accept_completed");
+    						if(valueObj == null){
+    							isCompleted = false;
+    						}else{
+    							Boolean value = (Boolean)valueObj;
+    							if(!value){
+    								isCompleted = false;
+    							}
+    						}
+    					}
+
+	    			}
+	    			
+	    		}
+	    		
 	    		if(isCompleted){
 	    			ReplenishmentCompleteHandler replenishmentCompleteHandler = new ReplenishmentCompleteHandler(this.appActivity);
 	    			replenishmentCompleteHandler.processComplete(replenishmentsId, partnerAcct, actor, ret->{
@@ -166,6 +193,8 @@ public class ReplenishmentRecordReceiptHandler extends CDOHandlerImpl<JsonObject
 	    				
 	    			});
 
+	    		}else{
+	    			msg.reply("ok");
 	    		}
 				
 			}else{

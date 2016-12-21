@@ -57,9 +57,6 @@ public class AllotInvComponent extends AppActivityImpl {
 		AllotInvConfirmHandler allotInvConfirmHandler = new AllotInvConfirmHandler(this);
 		ret.add(allotInvConfirmHandler);
 		
-		AllotInvQueryHandler allotInvQueryHandler = new AllotInvQueryHandler(this);
-		ret.add(allotInvQueryHandler);
-		
 		return ret;
 	}
 

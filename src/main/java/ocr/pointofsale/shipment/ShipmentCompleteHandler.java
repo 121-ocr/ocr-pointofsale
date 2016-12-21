@@ -1,6 +1,7 @@
 package ocr.pointofsale.shipment;
 
 import io.vertx.core.MultiMap;
+import io.vertx.core.eventbus.DeliveryOptions;
 import io.vertx.core.http.HttpMethod;
 import io.vertx.core.json.JsonObject;
 import otocloud.common.ActionContextTransfomer;
@@ -91,6 +92,22 @@ public class ShipmentCompleteHandler extends CDOHandlerImpl<JsonObject> {
     				}
 
     	    	});
+    	    	
+    			//通知供应方更新发货状态
+    			String scSrvName = this.appActivity.getDependencies().getJsonObject("salescenter_service")
+    					.getString("service_name", "");
+    			String scAddress = partnerAcct + "." + scSrvName + "." + "shipment.complete";
+    			DeliveryOptions options = new DeliveryOptions();
+    			options.setHeaders(headerMap);
+    			this.appActivity.getEventBus().send(scAddress, body, options, invRet -> {
+    				if (invRet.succeeded()) {
+    					
+    				} else {
+    					Throwable errThrowable = invRet.cause();
+    					String errMsgString = errThrowable.getMessage();
+    					appActivity.getLogger().error(errMsgString, errThrowable);    					
+    				}
+    			});
 
     		}else{
 				Throwable errThrowable = cdoResult.cause();
@@ -101,6 +118,8 @@ public class ShipmentCompleteHandler extends CDOHandlerImpl<JsonObject> {
     		}
     	});    	
 
+
 	}
 
 }
+

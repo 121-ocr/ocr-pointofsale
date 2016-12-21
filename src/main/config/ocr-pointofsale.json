@@ -111,9 +111,24 @@
 								}
 							}
 						}
+					},
+					"shipment-mgr": 
+					{
+						"options": 
+						{
+							"config": 
+							{
+								"dependencies": 
+								{
+									"salescenter_service": 
+									{
+										"service_name": "ocr-sales-center"
+									}
+								}
+							}
+						}
 					}
 				},
-
 				"component_deployment": 
 				[
 					
