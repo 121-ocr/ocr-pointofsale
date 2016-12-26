@@ -9,8 +9,10 @@ public class ReplenishmentConstant {
 
 	//收货通知创建地址
 	public static final String CREATE_ADDRESS = "create";
-	//收货通知查询地址
+	//待收货补货信息查询地址
 	public static final String QUERY_ADDRESS = "query";
+	//补货执行情况查询地址
+	public static final String QUERY_PROGRESS_ADDRESS = "query-progress";
 	
 	public static final String COMPLETED_ADDRESS = "complete";
 	

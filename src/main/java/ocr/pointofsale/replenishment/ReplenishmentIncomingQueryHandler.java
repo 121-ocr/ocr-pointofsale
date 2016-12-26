@@ -22,9 +22,9 @@ import otocloud.framework.core.OtoCloudBusMessage;
  * @date 2016年12月10日
  * @author wanghw
  */
-public class ReplenishmentQueryHandler extends CDOHandlerImpl<JsonObject> {
+public class ReplenishmentIncomingQueryHandler extends CDOHandlerImpl<JsonObject> {
 	
-	public ReplenishmentQueryHandler(AppActivityImpl appActivity) {
+	public ReplenishmentIncomingQueryHandler(AppActivityImpl appActivity) {
 		super(appActivity);
 	}
 
@@ -41,11 +41,12 @@ public class ReplenishmentQueryHandler extends CDOHandlerImpl<JsonObject> {
 	 * @return
 	 */
 	public List<String> getStatus(JsonObject msgBody) {
-//		return ChannelRestockingConstant.COMMIT_STATUS;
-		List<String> ret = new ArrayList<>();
+
+/*		List<String> ret = new ArrayList<>();
 		ret.add("shipping");
-		ret.add("shipped");
-		return ret;
+		ret.add("shipped");*/		
+		
+		return msgBody.getJsonArray("query_status").getList();
 	}	
 	
 	/**

@@ -18,15 +18,15 @@ import otocloud.framework.core.HandlerDescriptor;
 import otocloud.framework.core.OtoCloudBusMessage;
 
 /**
- * TODO: 待签收发货单查询
+ * TODO: 发货单查询
  * @date 2016年11月15日
  * @author lijing
  */
-public class QueryShipmentCreatedHandler extends CDOHandlerImpl<JsonObject> {
+public class QueryShipmentHandler extends CDOHandlerImpl<JsonObject> {
 	
-	public static final String ADDRESS = "find_created";
+	public static final String ADDRESS = "find";
 
-	public QueryShipmentCreatedHandler(AppActivityImpl appActivity) {
+	public QueryShipmentHandler(AppActivityImpl appActivity) {
 		super(appActivity);
 		// TODO Auto-generated constructor stub
 	}

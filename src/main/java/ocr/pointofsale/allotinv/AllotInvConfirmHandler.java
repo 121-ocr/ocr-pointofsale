@@ -94,7 +94,7 @@ public class AllotInvConfirmHandler extends ActionHandlerImpl<JsonObject> {
 		String srvName = this.appActivity.getService().getRealServiceName();
 		/*String invSrvName = this.appActivity.getDependencies().getJsonObject("salescenter_service")
 				.getString("service_name", "");*/
-		String updateShipmentAddress = account + "." + srvName + "." + "shipment-mgr.complete";
+		String updateShipmentAddress = account + "." + srvName + "." + "shipment-mgr.complete";		
 		
 		this.appActivity.getEventBus().send(updateShipmentAddress, shipment, ret -> {
 			if (ret.succeeded()) {

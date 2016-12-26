@@ -18,15 +18,15 @@ import otocloud.framework.core.HandlerDescriptor;
 import otocloud.framework.core.OtoCloudBusMessage;
 
 /**
- * TODO: 待签收发货单查询
+ * TODO: 已签收发货单查询
  * @date 2016年11月15日
  * @author lijing
  */
-public class QueryShipmentCreatedHandler extends CDOHandlerImpl<JsonObject> {
+public class QueryShipmentCompletedHandler extends CDOHandlerImpl<JsonObject> {
 	
-	public static final String ADDRESS = "find_created";
+	public static final String ADDRESS = "find_completed";
 
-	public QueryShipmentCreatedHandler(AppActivityImpl appActivity) {
+	public QueryShipmentCompletedHandler(AppActivityImpl appActivity) {
 		super(appActivity);
 		// TODO Auto-generated constructor stub
 	}
@@ -45,21 +45,23 @@ public class QueryShipmentCreatedHandler extends CDOHandlerImpl<JsonObject> {
 		JsonObject queryParams = msg.body();
 		
 		List<String> statusList = new ArrayList<>();
-		statusList.add(ShipmentConstant.CREATE_STATUS);
-	    
-	    this.queryLatestFactDataList(appActivity.getBizObjectType(), statusList, null, queryParams, null, findRet->{
+		statusList.add(ShipmentConstant.COMPLETE_STATUS);	    
+		
+		//PagingOptions pagingObj = PagingOptions.buildPagingOptions(queryParams);
+		JsonObject fields = queryParams.getJsonObject("fields");		
+		JsonObject queryCond = queryParams.getJsonObject("query");
+		JsonObject pagingInfo = queryParams.getJsonObject("paging");
+		this.queryLatestFactDataList(appActivity.getBizObjectType(), statusList, fields, pagingInfo, queryCond, null, findRet -> {
 	        if (findRet.succeeded()) {
-        	
-				//msg.reply(findRet.result());
-				List<JsonObject> stubBoList = findRet.result();
-				//JsonArray stubBoList = retObj.getJsonArray("datas");
+				JsonObject retObj = findRet.result();
+				JsonArray stubBoList = retObj.getJsonArray("datas");
 				if(stubBoList != null && stubBoList.size() > 0){
 					List<Future> futures = new ArrayList<Future>();
 					//List<JsonObject> retList = new ArrayList<>();
-					for(JsonObject stubBo : stubBoList){
-						//JsonObject stubBo = (JsonObject)item;
+					for(Object item : stubBoList){
+						JsonObject stubBo = (JsonObject)item;
 						Future<JsonObject> cdoFuture = Future.future();
-						futures.add(cdoFuture);						
+						futures.add(cdoFuture);							
 
 						JsonObject bo = stubBo.getJsonObject("bo");
 						String partner = bo.getString("partner");
@@ -89,9 +91,9 @@ public class QueryShipmentCreatedHandler extends CDOHandlerImpl<JsonObject> {
 							}
 						}
 						
-						//retObj.put("datas", retList);
+						retObj.put("datas", retList);
 						
-						msg.reply(retList);
+						msg.reply(retObj);
 					});
 					
 				}else{

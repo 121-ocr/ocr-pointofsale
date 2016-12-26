@@ -57,7 +57,7 @@ public class ReplenishmentComponent extends AppActivityImpl {
 		ReplenishmentCreateHandler replenishmentCreateHandler = new ReplenishmentCreateHandler(this);
 		ret.add(replenishmentCreateHandler);
 		
-		ReplenishmentQueryHandler replenishmentQueryHandler = new ReplenishmentQueryHandler(this);
+		ReplenishmentIncomingQueryHandler replenishmentQueryHandler = new ReplenishmentIncomingQueryHandler(this);
 		ret.add(replenishmentQueryHandler);	
 		
 		ReplenishmentRecordReceiptHandler replenishmentRecordReceiptHandler = new ReplenishmentRecordReceiptHandler(this);

@@ -62,6 +62,7 @@ public class ReplenishmentRecordReceiptHandler extends CDOHandlerImpl<JsonObject
 	public void handle(OtoCloudBusMessage<JsonObject> msg) {
 		JsonObject body = msg.body();
 		JsonObject shipment = body.getJsonObject("bo");
+		String acceptDate = shipment.getString("accept_date");
 		
 		String partnerAcct = body.getString("from_account");	
 		String replenishmentsId = shipment.getString("replenishments_id");
@@ -122,12 +123,14 @@ public class ReplenishmentRecordReceiptHandler extends CDOHandlerImpl<JsonObject
 			    		String rejectQuantityPath = "bo.details." + i + ".shipments." + j + ".reject_quantity";
 			    		String acceptCompletePath = "bo.details." + i + ".shipments." + j + ".accept_completed";
 			    		String actorQuantityPath = "bo.details." + i + ".shipments." + j + ".accept_actor";
+			    		String acceptDatePath = "bo.details." + i + ".shipments." + j + ".accept_date";
 			    				
 			    		JsonObject accept_info = rep_b2Shipment_b.get(detail.getString("detail_code")).getJsonObject("accept_info");
 			    		JsonObject updateJs = new JsonObject().put(acceptQuantityPath, accept_info.getValue("accept_quantity"))
 			    								.put(rejectQuantityPath, accept_info.getValue("reject_quantity"))
 			    								.put(acceptCompletePath, true)
-			    								.put(actorQuantityPath, accept_info.getValue("accept_actor"));		
+			    								.put(actorQuantityPath, accept_info.getValue("accept_actor"))
+			    								.put(acceptDatePath, acceptDate);		
 			    		
 		    		
 			    		this.updateCDO(BizRoleDirection.TO, partnerAcct, appActivity.getBizObjectType(), 

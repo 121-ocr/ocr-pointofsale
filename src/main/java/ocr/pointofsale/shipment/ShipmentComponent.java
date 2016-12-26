@@ -60,9 +60,9 @@ public class ShipmentComponent extends AppActivityImpl {
 		QueryShipmentCreatedHandler shipmentQueryHandler = new QueryShipmentCreatedHandler(this);
 		ret.add(shipmentQueryHandler);
 		
-/*		ShipmentQueryByIdHandler shipmentFindOneHandler = new ShipmentQueryByIdHandler(this);
-		ret.add(shipmentFindOneHandler);
-*/		
+		QueryShipmentCompletedHandler queryShipmentCompletedHandler = new QueryShipmentCompletedHandler(this);
+		ret.add(queryShipmentCompletedHandler);
+		
 		ShipmentCompleteHandler shipmentCompleteHandler = new ShipmentCompleteHandler(this);
 		ret.add(shipmentCompleteHandler);
 		
