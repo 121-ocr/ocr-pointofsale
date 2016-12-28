@@ -182,6 +182,12 @@ public class ReplenishmentRecordReceiptHandler extends CDOHandlerImpl<JsonObject
 	    			
 	    		}
 	    		
+	    		if(!currentStatus.equals("shipped")){
+	    			if(isCompleted){
+	    				isCompleted = false;
+	    			}
+	    		}
+	    		
 	    		if(isCompleted){
 	    			ReplenishmentCompleteHandler replenishmentCompleteHandler = new ReplenishmentCompleteHandler(this.appActivity);
 	    			replenishmentCompleteHandler.processComplete(replenishmentsId, partnerAcct, actor, ret->{

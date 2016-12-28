@@ -145,7 +145,10 @@ public class AllotInvConfirmHandler extends ActionHandlerImpl<JsonObject> {
 			param.put("warehouses", shipment.getJsonObject("target_warehouse"));
 			param.put("goods", detailO.getJsonObject("goods"));
 			param.put("sku", detailO.getJsonObject("goods").getString("product_sku_code"));
+			
 			param.put("invbatchcode", detailO.getString("invbatchcode"));
+			param.put("shelf_life", detailO.getString("shelf_life"));
+			
 			param.put("warehousecode", shipment.getJsonObject("target_warehouse").getString("code"));
 			param.put("status", "IN");
 			param.put("biz_data_type", "bp_shipment");
