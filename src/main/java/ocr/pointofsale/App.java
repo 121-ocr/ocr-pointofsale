@@ -4,7 +4,6 @@ import java.util.List;
 
 import otocloud.framework.app.engine.AppService;
 import otocloud.framework.app.engine.AppServiceEngineImpl;
-import otocloud.framework.app.engine.WebServer;
 import otocloud.framework.core.OtoCloudComponent;
 
 /**
@@ -19,12 +18,6 @@ public class App  extends AppServiceEngineImpl
 	@Override
 	public AppService newAppInstance() {
 		return new PointOfSaleService();
-	}
-
-	//创建此APP统一的web入口服务
-	@Override
-	public WebServer createWebServer() {
-		return new MyWebServer();
 	}
 
 	//创建APP全局组件
