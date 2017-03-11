@@ -67,6 +67,7 @@
         	},
         	"batch_code":"",//批号
         	"quantity": 60,//数量
+        	"shelf_life":"",
         	//零售价
         	"retail_price": {
         		"tax_type": "VTA",  //税类

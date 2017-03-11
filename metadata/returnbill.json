@@ -1,0 +1,228 @@
+{
+	"bo_id": "",
+	"return_code": "",
+	"return_date": "2016-12-08",
+	"replenishment_id": "",
+	"replenishment_code": "",
+	"out_warehouse": 
+	{
+		"name": "北京朝阳门店仓2",
+		"character": 
+		{
+			"name": "VMI仓",
+			"code": "1"
+		},
+
+		"code": "WH004",
+		"address": 
+		{
+			"region": 
+			{
+				"code": "110105",
+				"full_name": "北京市朝阳区"
+			},
+
+			"address_detail": "XXX街道"
+		},
+
+		"type": 
+		{
+			"name": "仓库",
+			"code": "1"
+		},
+
+		"account": "4"
+	},
+
+	"channel": 
+	{
+		"code": "N0002",
+		"link_account": "4",
+		"level": 
+		{
+			"name": "一级",
+			"code": "lv01"
+		},
+
+		"name": "卡诺回龙观加盟店",
+		"channel_assistant": "lj",
+		"channel_type": 
+		{
+			"name": "经销商",
+			"code": "ch02"
+		},
+
+		"region": 
+		{
+			"code": "100000",
+			"full_name": "北京"
+		},
+
+		"ship_to": 
+		{
+			"address": 
+			{
+				"region": 
+				{
+					"code": "100200",
+					"full_name": "北京市昌平区"
+				},
+
+				"address_detail": "XXX街道"
+			},
+
+			"contact": 
+			{
+				"user": 
+				{
+					"name": "小李",
+					"code": "U002"
+				},
+
+				"phone": "",
+				"email": ""
+			}
+		},
+
+		"customer": 
+		{
+			"name": "昌平欣然百货",
+			"code": "cus0002"
+		},
+
+		"link_org_acct_rel": "1"
+	},
+
+	"detail": 
+	[
+		{
+			"stocking_warehouse": 
+			{
+				"name": "河北总仓",
+				"account": "3",
+				"code": "WH002"
+			},
+
+			"shelf_life": "",
+			"batch_code": "",
+			"quantity": 1,
+			"goods": 
+			{
+				"product_sku_code": "JUICE001SP0003SP0001",
+				"product_sku": 
+				{
+					"bar_code": "",
+					"product_spu": 
+					{
+						"spu_code": "JUICE003",
+						"brand": 
+						{
+							"name": "PRIMA",
+							"code": "BR0005",
+							"manufacturer": 
+							{
+								"name": "塞浦路斯",
+								"code": "MF0005"
+							}
+						},
+
+						"base_unit": "箱",
+						"desc": ""
+					},
+
+					"product_specifications": 
+					{
+						"specification_name": "容量",
+						"specification_value": "750ml",
+						"specification_code": "SP0002"
+					}
+				},
+
+				"sales_catalogs": 
+				[
+					{
+						"name": "红酒",
+						"inner_code": "GC0301",
+						"code": "GC0301"
+					}
+				],
+
+				"title": "普瑞达野生浆果550ml",
+				"account": "3"
+			},
+
+			"supply_price": 
+			{
+				"tax_type": "VTA",
+				"tax_rate": 0.17,
+				"price_including_tax": 
+				{
+					"currency": 
+					{
+						"currency_type": "CYN",
+						"money": 120.00
+					},
+
+					"original_currency": 
+					{
+						"currency_type": "USD",
+						"money": 120.00
+					}
+				},
+
+				"price": 
+				{
+					"currency": 
+					{
+						"currency_type": "CYN",
+						"money": 120.00
+					},
+
+					"original_currency": 
+					{
+						"currency_type": "USD",
+						"money": 120.00
+					}
+				}
+			},
+
+			"supply_amount": 
+			{
+				"money_including_tax": 
+				{
+					"currency": 
+					{
+						"currency_type": "CYN",
+						"money": 720.00
+					},
+
+					"original_currency": 
+					{
+						"currency_type": "USD",
+						"money": 720.00
+					}
+				},
+
+				"money": 
+				{
+					"currency": 
+					{
+						"currency_type": "CYN",
+						"money": 720.00
+					},
+
+					"original_currency": 
+					{
+						"currency_type": "USD",
+						"money": 720.00
+					}
+				}
+			},
+
+			"returnreason": ""
+		}
+	],
+
+	"is_completed": false,
+	"completed_date": ""
+}
