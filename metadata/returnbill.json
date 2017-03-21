@@ -1,10 +1,10 @@
 {
 	"bo_id": "",
-	"return_code": "",
-	"return_date": "2016-12-08",
-	"replenishment_id": "",
-	"replenishment_code": "",
-	"out_warehouse": 
+	"return_code": "",//退货单号
+	"return_date": "2016-12-08",//退货日期
+	"replenishment_id": "",//补货单id
+	"replenishment_code": "",//补货单号
+	"out_warehouse": //出库仓库（门店）
 	{
 		"name": "北京朝阳门店仓2",
 		"character": 
@@ -34,7 +34,7 @@
 		"account": "4"
 	},
 
-	"channel": 
+	"channel": //渠道
 	{
 		"code": "N0002",
 		"link_account": "4",
@@ -96,14 +96,14 @@
 	"detail": 
 	[
 		{
-			"stocking_warehouse": 
+			"stocking_warehouse": //入库仓库（渠道）
 			{
 				"name": "河北总仓",
 				"account": "3",
 				"code": "WH002"
 			},
 
-			"location": 
+			"location": //货位
 			{
 				"currentnum": "4",
 				"code": "1-6-2-10",
@@ -112,10 +112,10 @@
 				"ismixedLot": 0
 			},
 
-			"shelf_life": "",
-			"batch_code": "",
-			"quantity": 1,
-			"goods": 
+			"shelf_life": "",//保质期
+			"batch_code": "",//批次号
+			"quantity": 1,//退货数量
+			"goods": //商品
 			{
 				"product_sku_code": "JUICE001SP0003SP0001",
 				"product_sku": 
@@ -160,7 +160,7 @@
 				"account": "3"
 			},
 
-			"supply_price": 
+			"supply_price": //供应价
 			{
 				"tax_type": "VTA",
 				"tax_rate": 0.17,
@@ -195,7 +195,7 @@
 				}
 			},
 
-			"supply_amount": 
+			"supply_amount": //供应金额
 			{
 				"money_including_tax": 
 				{
@@ -228,10 +228,10 @@
 				}
 			},
 
-			"returnreason": ""
+			"returnreason": ""//退货原因
 		}
 	],
 
-	"is_completed": false,
-	"completed_date": ""
+	"is_completed": false,//是否完成
+	"completed_date": ""//完成日期
 }
