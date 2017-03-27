@@ -1,15 +1,15 @@
 {
 	"bo_id": "",
-	"exchange_code": "",
-	"exchange_date": "2016-12-08",
-	"replenishment_id": "",
+	"exchange_code": "",//æ¢è´§å•å·
+	"exchange_date": "2016-12-08",//æ¢è´§æ—¥æœŸ
+	"replenishment_id": "",//è¡¥è´§å•
 	"replenishment_code": "",
-	"out_warehouse": 
+	"out_warehouse": //å‡ºåº“ä»“åº“ 
 	{
-		"name": "±±¾©³¯ÑôÃÅµê²Ö2",
+		"name": "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Åµï¿½ï¿½2",
 		"character": 
 		{
-			"name": "VMI²Ö",
+			"name": "VMIï¿½ï¿½",
 			"code": "1"
 		},
 
@@ -19,43 +19,43 @@
 			"region": 
 			{
 				"code": "110105",
-				"full_name": "±±¾©ÊĞ³¯ÑôÇø"
+				"full_name": "ï¿½ï¿½ï¿½ï¿½ï¿½Ğ³ï¿½ï¿½ï¿½ï¿½ï¿½"
 			},
 
-			"address_detail": "XXX½ÖµÀ"
+			"address_detail": "XXXï¿½Öµï¿½"
 		},
 
 		"type": 
 		{
-			"name": "²Ö¿â",
+			"name": "ï¿½Ö¿ï¿½",
 			"code": "1"
 		},
 
 		"account": "4"
 	},
 
-	"channel": 
+	"channel": //æ¸ é“
 	{
 		"code": "N0002",
 		"link_account": "4",
 		"level": 
 		{
-			"name": "Ò»¼¶",
+			"name": "Ò»ï¿½ï¿½",
 			"code": "lv01"
 		},
 
-		"name": "¿¨Åµ»ØÁú¹Û¼ÓÃËµê",
+		"name": "ï¿½ï¿½Åµï¿½ï¿½ï¿½ï¿½ï¿½Û¼ï¿½ï¿½Ëµï¿½",
 		"channel_assistant": "lj",
 		"channel_type": 
 		{
-			"name": "¾­ÏúÉÌ",
+			"name": "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½",
 			"code": "ch02"
 		},
 
 		"region": 
 		{
 			"code": "100000",
-			"full_name": "±±¾©"
+			"full_name": "ï¿½ï¿½ï¿½ï¿½"
 		},
 
 		"ship_to": 
@@ -65,17 +65,17 @@
 				"region": 
 				{
 					"code": "100200",
-					"full_name": "±±¾©ÊĞ²ıÆ½Çø"
+					"full_name": "ï¿½ï¿½ï¿½ï¿½ï¿½Ğ²ï¿½Æ½ï¿½ï¿½"
 				},
 
-				"address_detail": "XXX½ÖµÀ"
+				"address_detail": "XXXï¿½Öµï¿½"
 			},
 
 			"contact": 
 			{
 				"user": 
 				{
-					"name": "Ğ¡Àî",
+					"name": "Ğ¡ï¿½ï¿½",
 					"code": "U002"
 				},
 
@@ -86,7 +86,7 @@
 
 		"customer": 
 		{
-			"name": "²ıÆ½ĞÀÈ»°Ù»õ",
+			"name": "ï¿½ï¿½Æ½ï¿½ï¿½È»ï¿½Ù»ï¿½",
 			"code": "cus0002"
 		},
 
@@ -96,142 +96,145 @@
 	"detail": 
 	[
 		{
-			"stocking_warehouse": 
+			"bid": "",//è¡Œå·
+			"from": //æºå•†å“
 			{
-				"name": "ºÓ±±×Ü²Ö",
-				"account": "3",
-				"code": "WH002"
-			},
-
-			"location": 
-			{
-				"currentnum": "4",
-				"code": "1-6-2-10",
-				"standfullnum": "6",
-				"packunit": "Ïä",
-				"ismixedLot": 0
-			},
-
-			"shelf_life": "",
-			"batch_code": "",
-			"quantity": 1,
-			"goods": 
-			{
-				"product_sku_code": "JUICE001SP0003SP0001",
-				"product_sku": 
+				"stocking_warehouse": //å…¥åº“ä»“åº“
 				{
-					"bar_code": "",
-					"product_spu": 
+					"name": "ï¿½Ó±ï¿½ï¿½Ü²ï¿½",
+					"account": "3",
+					"code": "WH002"
+				},
+
+				"location": //è´§ä½
+				{
+					"currentnum": "4",
+					"code": "1-6-2-10",
+					"standfullnum": "6",
+					"packunit": "ï¿½ï¿½",
+					"ismixedLot": 0
+				},
+
+				"shelf_life": "",//ä¿è´¨æœŸ
+				"batch_code": "",//æ‰¹æ¬¡å·
+				"quantity": 1,//æ•°é‡
+				"goods": //æºå•†å“
+				{
+					"product_sku_code": "JUICE001SP0003SP0001",
+					"product_sku": 
 					{
-						"spu_code": "JUICE003",
-						"brand": 
+						"bar_code": "",
+						"product_spu": 
 						{
-							"name": "PRIMA",
-							"code": "BR0005",
-							"manufacturer": 
+							"spu_code": "JUICE003",
+							"brand": 
 							{
-								"name": "ÈûÆÖÂ·Ë¹",
-								"code": "MF0005"
-							}
+								"name": "PRIMA",
+								"code": "BR0005",
+								"manufacturer": 
+								{
+									"name": "ï¿½ï¿½ï¿½ï¿½Â·Ë¹",
+									"code": "MF0005"
+								}
+							},
+
+							"base_unit": "ï¿½ï¿½",
+							"desc": ""
 						},
 
-						"base_unit": "Ïä",
-						"desc": ""
+						"product_specifications": 
+						{
+							"specification_name": "ï¿½ï¿½ï¿½ï¿½",
+							"specification_value": "750ml",
+							"specification_code": "SP0002"
+						}
 					},
 
-					"product_specifications": 
-					{
-						"specification_name": "ÈİÁ¿",
-						"specification_value": "750ml",
-						"specification_code": "SP0002"
-					}
-				},
+					"sales_catalogs": 
+					[
+						{
+							"name": "ï¿½ï¿½ï¿½",
+							"inner_code": "GC0301",
+							"code": "GC0301"
+						}
+					],
 
-				"sales_catalogs": 
-				[
-					{
-						"name": "ºì¾Æ",
-						"inner_code": "GC0301",
-						"code": "GC0301"
-					}
-				],
-
-				"title": "ÆÕÈğ´ïÒ°Éú½¬¹û550ml",
-				"account": "3"
-			},
-
-			"supply_price": 
-			{
-				"tax_type": "VTA",
-				"tax_rate": 0.17,
-				"price_including_tax": 
-				{
-					"currency": 
-					{
-						"currency_type": "CYN",
-						"money": 120.00
-					},
-
-					"original_currency": 
-					{
-						"currency_type": "USD",
-						"money": 120.00
-					}
-				},
-
-				"price": 
-				{
-					"currency": 
-					{
-						"currency_type": "CYN",
-						"money": 120.00
-					},
-
-					"original_currency": 
-					{
-						"currency_type": "USD",
-						"money": 120.00
-					}
+					"title": "ï¿½ï¿½ï¿½ï¿½ï¿½Ò°ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½550ml",
+					"account": "3"
 				}
 			},
 
-			"supply_amount": 
+			"to": //ç›®æ ‡å•†å“
 			{
-				"money_including_tax": 
+				"stocking_warehouse": //å‡ºåº“ä»“åº“
 				{
-					"currency": 
-					{
-						"currency_type": "CYN",
-						"money": 720.00
-					},
-
-					"original_currency": 
-					{
-						"currency_type": "USD",
-						"money": 720.00
-					}
+					"name": "ï¿½Ó±ï¿½ï¿½Ü²ï¿½",
+					"account": "3",
+					"code": "WH002"
 				},
 
-				"money": 
+				"location": 
 				{
-					"currency": 
+					"currentnum": "4",
+					"code": "1-6-2-10",
+					"standfullnum": "6",
+					"packunit": "ï¿½ï¿½",
+					"ismixedLot": 0
+				},
+
+				"shelf_life": "",
+				"batch_code": "",
+				"quantity": 1,
+				"goods": 
+				{
+					"product_sku_code": "JUICE001SP0003SP0001",
+					"product_sku": 
 					{
-						"currency_type": "CYN",
-						"money": 720.00
+						"bar_code": "",
+						"product_spu": 
+						{
+							"spu_code": "JUICE003",
+							"brand": 
+							{
+								"name": "PRIMA",
+								"code": "BR0005",
+								"manufacturer": 
+								{
+									"name": "ï¿½ï¿½ï¿½ï¿½Â·Ë¹",
+									"code": "MF0005"
+								}
+							},
+
+							"base_unit": "ï¿½ï¿½",
+							"desc": ""
+						},
+
+						"product_specifications": 
+						{
+							"specification_name": "ï¿½ï¿½ï¿½ï¿½",
+							"specification_value": "750ml",
+							"specification_code": "SP0002"
+						}
 					},
 
-					"original_currency": 
-					{
-						"currency_type": "USD",
-						"money": 720.00
-					}
+					"sales_catalogs": 
+					[
+						{
+							"name": "ï¿½ï¿½ï¿½",
+							"inner_code": "GC0301",
+							"code": "GC0301"
+						}
+					],
+
+					"title": "ï¿½ï¿½ï¿½ï¿½ï¿½Ò°ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½550ml",
+					"account": "3"
 				}
 			},
 
-			"returnreason": ""
+			"changereason": ""//æ¢è´§åŸå› 
 		}
 	],
 
-	"is_completed": false,
-	"completed_date": ""
+	"is_completed": false,//æ˜¯å¦å®Œæˆ
+	"completed_date": ""//å®Œæˆæ—¥æœŸ
 }
