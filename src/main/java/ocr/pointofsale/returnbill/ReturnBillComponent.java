@@ -54,11 +54,11 @@ public class ReturnBillComponent extends AppActivityImpl {
 		// TODO Auto-generated method stub
 		List<OtoCloudEventHandlerRegistry> ret = new ArrayList<OtoCloudEventHandlerRegistry>();
 
-		ReturnBillCreateHandler replenishmentCreateHandler = new ReturnBillCreateHandler(this);
-		ret.add(replenishmentCreateHandler);
+		ReturnBillCreateHandler returnBillCreateHandler = new ReturnBillCreateHandler(this);
+		ret.add(returnBillCreateHandler);
 		
-		ReturnBillQueryHandler replenishmentQueryHandler = new ReturnBillQueryHandler(this);
-		ret.add(replenishmentQueryHandler);	
+		ReturnBillQueryHandler returnBillQueryHandler = new ReturnBillQueryHandler(this);
+		ret.add(returnBillQueryHandler);	
 		
 		ReturnBillCompleteHandler returnBillCompleteHandler = new ReturnBillCompleteHandler(this);
 		ret.add(returnBillCompleteHandler);
