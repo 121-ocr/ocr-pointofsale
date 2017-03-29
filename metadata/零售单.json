@@ -1,5 +1,6 @@
 {
-    "bo_id": "SO201611190001",//单据号
+    "boNo": "SO201611190001",//单据号
+    "deskNo":"",//收银台
     "sale_date": "2016/11/15",  //销售日期
 	"customer":{//客户
 		"member_code":"",//会员卡号
@@ -23,6 +24,15 @@
    		},
    		"address": "北京市大兴区38号"
     },
+    "totalNum":"",//总数量
+    "totalActualAmt":"",//总金额（本币）
+    "cutoffAmt":"",//总折扣金额（本币）
+    "bounce":"",//本次积分
+    "totalAmt":"",//应付金额
+    "incomeType":"",//支付方式
+    "totalIncome":"",//支付金额
+    "totalReturn":"",//找零
+    "delivery":"",//送货信息
     //表体
     "detail": [
         {
@@ -65,6 +75,7 @@
             		}
             	}
         	},
+        	"deliveryFee":"",//运费
         	"batch_code":"",//批号
         	"quantity": 60,//数量
         	"shelf_life":"",
