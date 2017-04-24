@@ -6,6 +6,7 @@ import java.util.List;
 import ocr.pointofsale.allotinv.AllotInvComponent;
 import ocr.pointofsale.posprice.POSPriceComponent;
 import ocr.pointofsale.replenishment.ReplenishmentComponent;
+import ocr.pointofsale.returnbill.ReturnBillComponent;
 import ocr.pointofsale.saleorder.SaleOrderComponent;
 import ocr.pointofsale.shipment.ShipmentComponent;
 import otocloud.framework.app.engine.AppServiceImpl;
@@ -53,6 +54,9 @@ public class PointOfSaleService extends AppServiceImpl
 		
 		ShipmentComponent shipmentComponent = new ShipmentComponent();
 		retActivities.add(shipmentComponent);
+		
+		ReturnBillComponent returnBillComponent = new ReturnBillComponent();
+		retActivities.add(returnBillComponent);
 		
 		return retActivities;
 	}
