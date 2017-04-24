@@ -7,8 +7,8 @@ import otocloud.common.ActionURI;
 import otocloud.framework.app.function.ActionDescriptor;
 import otocloud.framework.app.function.ActionHandlerImpl;
 import otocloud.framework.app.function.AppActivityImpl;
+import otocloud.framework.core.CommandMessage;
 import otocloud.framework.core.HandlerDescriptor;
-import otocloud.framework.core.OtoCloudBusMessage;
 
 /**
  * 门店代销价格创建操作
@@ -52,9 +52,9 @@ public class POSPriceCreateHandler extends ActionHandlerImpl<JsonObject> {
 	}
 
 	@Override
-	public void handle(OtoCloudBusMessage<JsonObject> event) {
+	public void handle(CommandMessage<JsonObject> event) {
 		
-		JsonObject body = event.body();
+		JsonObject body = event.getContent();
 		
 		JsonObject query = body.getJsonObject("query");
 		JsonObject update = body.getJsonObject("update");

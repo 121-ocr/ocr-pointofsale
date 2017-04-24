@@ -1,21 +1,22 @@
 package ocr.pointofsale.replenishment;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import io.vertx.core.CompositeFuture;
 import io.vertx.core.Future;
 import io.vertx.core.http.HttpMethod;
 import io.vertx.core.impl.CompositeFutureImpl;
 import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import otocloud.common.ActionURI;
 import otocloud.framework.app.common.BizRoleDirection;
 import otocloud.framework.app.function.ActionDescriptor;
 import otocloud.framework.app.function.AppActivityImpl;
 import otocloud.framework.app.function.CDOHandlerImpl;
+import otocloud.framework.core.CommandMessage;
 import otocloud.framework.core.HandlerDescriptor;
-import otocloud.framework.core.OtoCloudBusMessage;
 
 /**
  * TODO: 待收货补货单查询
@@ -53,14 +54,14 @@ public class ReplenishmentIncomingQueryHandler extends CDOHandlerImpl<JsonObject
 	 * 处理器
 	 */
 	@Override
-	public void handle(OtoCloudBusMessage<JsonObject> msg) {
+	public void handle(CommandMessage<JsonObject> msg) {
 
-		JsonObject queryParams = msg.body();
+		JsonObject queryParams = msg.getContent();
 		//PagingOptions pagingObj = PagingOptions.buildPagingOptions(queryParams);
 		JsonObject fields = queryParams.getJsonObject("fields");		
 		JsonObject queryCond = queryParams.getJsonObject("query");
 		JsonObject pagingInfo = queryParams.getJsonObject("paging");
-		this.queryLatestFactDataList(appActivity.getBizObjectType(), getStatus(queryParams), fields, pagingInfo, queryCond, null, findRet -> {
+		this.queryLatestFactDataList(null, appActivity.getBizObjectType(), getStatus(queryParams), fields, pagingInfo, queryCond, null, findRet -> {
 			if (findRet.succeeded()) {
 				//msg.reply(findRet.result());
 				JsonObject retObj = findRet.result();

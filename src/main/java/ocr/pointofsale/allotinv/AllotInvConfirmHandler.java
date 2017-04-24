@@ -1,20 +1,22 @@
 package ocr.pointofsale.allotinv;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import io.vertx.core.CompositeFuture;
 import io.vertx.core.Future;
 import io.vertx.core.http.HttpMethod;
 import io.vertx.core.impl.CompositeFutureImpl;
 import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import otocloud.common.ActionURI;
 import otocloud.framework.app.function.ActionDescriptor;
 import otocloud.framework.app.function.ActionHandlerImpl;
 import otocloud.framework.app.function.AppActivityImpl;
 import otocloud.framework.app.function.BizRootType;
 import otocloud.framework.app.function.BizStateSwitchDesc;
+import otocloud.framework.core.CommandMessage;
 import otocloud.framework.core.HandlerDescriptor;
 import otocloud.framework.core.OtoCloudBusMessage;
 
@@ -39,10 +41,10 @@ public class AllotInvConfirmHandler extends ActionHandlerImpl<JsonObject> {
 	}
 
 	@Override
-	public void handle(OtoCloudBusMessage<JsonObject> msg) {
+	public void handle(CommandMessage<JsonObject> msg) {
 		List<Future> futures = new ArrayList<>();
 		// 更新收货通知
-		JsonObject body = msg.body();
+		JsonObject body = msg.getContent();
 		JsonObject replenishment = body.getJsonObject("replenishment");
 		JsonObject shipment = body.getJsonObject("shipment");
 		JsonObject replenishmentBo = replenishment.getJsonObject("bo");

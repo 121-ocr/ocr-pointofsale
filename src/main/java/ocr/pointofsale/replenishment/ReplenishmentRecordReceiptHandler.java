@@ -1,19 +1,20 @@
 package ocr.pointofsale.replenishment;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import io.vertx.core.http.HttpMethod;
 import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
+
+import java.util.HashMap;
+import java.util.Map;
+
 import otocloud.common.ActionContextTransfomer;
 import otocloud.common.ActionURI;
 import otocloud.framework.app.common.BizRoleDirection;
 import otocloud.framework.app.function.ActionDescriptor;
 import otocloud.framework.app.function.AppActivityImpl;
 import otocloud.framework.app.function.CDOHandlerImpl;
+import otocloud.framework.core.CommandMessage;
 import otocloud.framework.core.HandlerDescriptor;
-import otocloud.framework.core.OtoCloudBusMessage;
 
 /**
  * 补货单通知创建操作
@@ -59,8 +60,8 @@ public class ReplenishmentRecordReceiptHandler extends CDOHandlerImpl<JsonObject
 	}
 
 	@Override
-	public void handle(OtoCloudBusMessage<JsonObject> msg) {
-		JsonObject body = msg.body();
+	public void handle(CommandMessage<JsonObject> msg) {
+		JsonObject body = msg.getContent();
 		JsonObject shipment = body.getJsonObject("bo");
 		String acceptDate = shipment.getString("accept_date");
 		
@@ -131,9 +132,8 @@ public class ReplenishmentRecordReceiptHandler extends CDOHandlerImpl<JsonObject
 			    								.put(acceptCompletePath, true)
 			    								.put(actorQuantityPath, accept_info.getValue("accept_actor"))
 			    								.put(acceptDatePath, acceptDate);		
-			    		
 		    		
-			    		this.updateCDO(BizRoleDirection.TO, partnerAcct, appActivity.getBizObjectType(), 
+			    		this.updateCDO(null, null, BizRoleDirection.TO, partnerAcct, appActivity.getBizObjectType(), 
 			    				queryJs, updateJs, currentStatus, actor, cdoRet->{			    					
 			    					if(cdoRet.succeeded()){
 			    						
