@@ -6,6 +6,7 @@ import otocloud.common.ActionURI;
 import otocloud.framework.app.function.ActionDescriptor;
 import otocloud.framework.app.function.AppActivityImpl;
 import otocloud.framework.app.function.CDOHandlerImpl;
+import otocloud.framework.common.CallContextSchema;
 import otocloud.framework.core.CommandMessage;
 import otocloud.framework.core.HandlerDescriptor;
 
@@ -63,7 +64,10 @@ public class ReplenishmentCreateHandler extends CDOHandlerImpl<JsonObject> {
 		
 		String initState = bo.getString("current_state");
 		
-		recordFactData(null, appActivity.getBizObjectType(), stubBo, stubBoId, 
+		//按业务单元隔离
+		String bizUnit = msg.getCallContext().getString(CallContextSchema.BIZ_UNIT_ID);		
+		
+		recordFactData(bizUnit, appActivity.getBizObjectType(), stubBo, stubBoId, 
 				null, initState, true, false, actor, null, result->{
 			if (result.succeeded()) {				
 				msg.reply(stubBo);				

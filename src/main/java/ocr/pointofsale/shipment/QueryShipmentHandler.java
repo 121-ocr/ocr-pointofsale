@@ -15,6 +15,7 @@ import otocloud.framework.app.common.BizRoleDirection;
 import otocloud.framework.app.function.ActionDescriptor;
 import otocloud.framework.app.function.AppActivityImpl;
 import otocloud.framework.app.function.CDOHandlerImpl;
+import otocloud.framework.common.CallContextSchema;
 import otocloud.framework.core.CommandMessage;
 import otocloud.framework.core.HandlerDescriptor;
 
@@ -47,8 +48,10 @@ public class QueryShipmentHandler extends CDOHandlerImpl<JsonObject> {
 		
 		List<String> statusList = new ArrayList<>();
 		statusList.add(ShipmentConstant.CREATE_STATUS);
+		
+		String bizUnit = msg.getCallContext().getString(CallContextSchema.BIZ_UNIT_ID);
 	    
-	    this.queryLatestFactDataList(null, appActivity.getBizObjectType(), statusList, null, queryParams, null, findRet->{
+	    this.queryLatestFactDataList(bizUnit, appActivity.getBizObjectType(), statusList, null, queryParams, null, findRet->{
 	        if (findRet.succeeded()) {
         	
 				//msg.reply(findRet.result());

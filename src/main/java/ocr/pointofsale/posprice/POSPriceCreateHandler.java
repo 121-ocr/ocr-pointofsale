@@ -7,6 +7,7 @@ import otocloud.common.ActionURI;
 import otocloud.framework.app.function.ActionDescriptor;
 import otocloud.framework.app.function.ActionHandlerImpl;
 import otocloud.framework.app.function.AppActivityImpl;
+import otocloud.framework.common.CallContextSchema;
 import otocloud.framework.core.CommandMessage;
 import otocloud.framework.core.HandlerDescriptor;
 
@@ -52,9 +53,9 @@ public class POSPriceCreateHandler extends ActionHandlerImpl<JsonObject> {
 	}
 
 	@Override
-	public void handle(CommandMessage<JsonObject> event) {
+	public void handle(CommandMessage<JsonObject> msg) {
 		
-		JsonObject body = event.getContent();
+		JsonObject body = msg.getContent();
 		
 		JsonObject query = body.getJsonObject("query");
 		JsonObject update = body.getJsonObject("update");
@@ -62,16 +63,22 @@ public class POSPriceCreateHandler extends ActionHandlerImpl<JsonObject> {
 		UpdateOptions opt = new UpdateOptions();
 		opt.setUpsert(true);
 		
+		//String account = this.appActivity.getAppInstContext().getAccount();
+		
+		//按业务单元隔离
+		String bizUnit = msg.getCallContext().getString(CallContextSchema.BIZ_UNIT_ID);		
+		query = this.buildQueryForMongo(query, bizUnit);
+		
 		this.appActivity.getAppDatasource().getMongoClient().updateCollectionWithOptions(appActivity.getDBTableName(this.appActivity.getBizObjectType()), 
 				query, update, opt, resultHandler->{
 					
 					if (resultHandler.succeeded()) {
-						event.reply(resultHandler.result().toJson());
+						msg.reply(resultHandler.result().toJson());
 					} else {
 						Throwable errThrowable = resultHandler.cause();
 						String errMsgString = errThrowable.getMessage();
 						appActivity.getLogger().error(errMsgString, errThrowable);
-						event.fail(100, errMsgString);
+						msg.fail(100, errMsgString);
 					}
 					
 				});

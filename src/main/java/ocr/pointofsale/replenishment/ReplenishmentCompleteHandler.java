@@ -13,6 +13,7 @@ import otocloud.framework.app.function.AppActivityImpl;
 import otocloud.framework.app.function.BizRootType;
 import otocloud.framework.app.function.BizStateSwitchDesc;
 import otocloud.framework.app.function.CDOHandlerImpl;
+import otocloud.framework.common.CallContextSchema;
 import otocloud.framework.core.CommandMessage;
 import otocloud.framework.core.HandlerDescriptor;
 
@@ -68,7 +69,10 @@ public class ReplenishmentCompleteHandler extends CDOHandlerImpl<JsonObject> {
 		
 		JsonObject actor = ActionContextTransfomer.fromMessageHeaderToActor(msg.headers()); 
 		
-		this.processComplete(boId, partnerAcct, actor, result->{
+		//按业务单元隔离
+		String bizUnit = msg.getCallContext().getString(CallContextSchema.BIZ_UNIT_ID);		
+		
+		this.processComplete(bizUnit, boId, partnerAcct, actor, result->{
 			if (result.succeeded()) {
 				msg.reply("ok");						
 			}else{
@@ -78,16 +82,17 @@ public class ReplenishmentCompleteHandler extends CDOHandlerImpl<JsonObject> {
     	});
 	}
 	
-	public void processComplete(String boId, String partnerAcct, JsonObject actor, Handler<AsyncResult<String>> ret){
+	public void processComplete(String bizUnit, String boId, String partnerAcct, JsonObject actor, Handler<AsyncResult<String>> ret){
 		
 		Future<String> retFuture = Future.future();
-		retFuture.setHandler(ret);
+		retFuture.setHandler(ret);		
+
 		
-		this.recordFactData(null, appActivity.getBizObjectType(), null,
+		this.recordFactData(bizUnit, appActivity.getBizObjectType(), null,
 				boId, actor, null, result->{
 			if (result.succeeded()) {				
 				
-				this.recordCDO(null, BizRoleDirection.TO, partnerAcct, appActivity.getBizObjectType(), 
+				this.recordCDO(bizUnit, BizRoleDirection.TO, partnerAcct, appActivity.getBizObjectType(), 
 				null, boId, actor, next->{
 					if (next.succeeded()) {			
 						retFuture.complete("ok");

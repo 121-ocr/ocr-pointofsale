@@ -14,6 +14,7 @@ import otocloud.common.ActionURI;
 import otocloud.framework.app.function.ActionDescriptor;
 import otocloud.framework.app.function.AppActivityImpl;
 import otocloud.framework.app.function.CDOHandlerImpl;
+import otocloud.framework.common.CallContextSchema;
 import otocloud.framework.core.CommandMessage;
 import otocloud.framework.core.HandlerDescriptor;
 
@@ -75,6 +76,8 @@ public class ShipmentBatchCreateHandler extends CDOHandlerImpl<JsonArray> {
 	public void handle(CommandMessage<JsonArray> msg) {
 		JsonArray bos = msg.getContent();
 		
+		String bizUnit = msg.getCallContext().getString(CallContextSchema.BIZ_UNIT_ID);
+		
 		List<Future> futures = new ArrayList<Future>();
 		for(Object item: bos){
 			Future<JsonObject> itemFuture = Future.future();
@@ -88,7 +91,7 @@ public class ShipmentBatchCreateHandler extends CDOHandlerImpl<JsonArray> {
 			
 			String initState = bo.getString("current_state");
 			
-			recordFactData(null, appActivity.getBizObjectType(), stubBo, stubBoId, 
+			recordFactData(bizUnit, appActivity.getBizObjectType(), stubBo, stubBoId, 
 					null, initState, true, false, null, null, result->{
 				if (result.succeeded()) {				
 					itemFuture.complete(stubBo);

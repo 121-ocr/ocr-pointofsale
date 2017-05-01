@@ -7,6 +7,7 @@ import java.util.List;
 
 import ocr.common.handler.SampleBillBaseQueryHandler;
 import otocloud.framework.app.function.AppActivityImpl;
+import otocloud.framework.common.CallContextSchema;
 import otocloud.framework.core.CommandMessage;
 
 /**
@@ -32,6 +33,10 @@ public class ShiftQueryHandler extends SampleBillBaseQueryHandler {
 	public void handle(CommandMessage<JsonObject> msg) {
 
 		JsonObject query = msg.getContent();
+		
+		String bizUnit = msg.getCallContext().getString(CallContextSchema.BIZ_UNIT_ID);		
+		
+		query = this.buildQueryForMongo(query, bizUnit);
 		
 		appActivity.getAppDatasource().getMongoClient().findWithOptions(
 				appActivity.getDBTableName(this.appActivity.getBizObjectType()), query, new FindOptions(), findRet -> {

@@ -3,6 +3,7 @@ package ocr.pointofsale.posprice;
 import io.vertx.core.json.JsonObject;
 import ocr.common.handler.SampleDocQueryHandler;
 import otocloud.framework.app.function.AppActivityImpl;
+import otocloud.framework.common.CallContextSchema;
 import otocloud.framework.core.CommandMessage;
 
 /**
@@ -23,6 +24,10 @@ public class POSPriceQueryHandler extends SampleDocQueryHandler {
 	public void handle(CommandMessage<JsonObject> msg) {
 		
 		JsonObject query = msg.getContent();
+		
+		//按业务单元隔离
+		String bizUnit = msg.getCallContext().getString(CallContextSchema.BIZ_UNIT_ID);		
+		query = this.buildQueryForMongo(query, bizUnit);
 
 		appActivity.getAppDatasource().getMongoClient().find(appActivity.getDBTableName(appActivity.getBizObjectType()),
 				query,

@@ -13,6 +13,7 @@ import otocloud.framework.app.common.BizRoleDirection;
 import otocloud.framework.app.function.ActionDescriptor;
 import otocloud.framework.app.function.AppActivityImpl;
 import otocloud.framework.app.function.CDOHandlerImpl;
+import otocloud.framework.common.CallContextSchema;
 import otocloud.framework.core.CommandMessage;
 import otocloud.framework.core.HandlerDescriptor;
 
@@ -66,11 +67,15 @@ public class ReplenishmentRecordReceiptHandler extends CDOHandlerImpl<JsonObject
 		String acceptDate = shipment.getString("accept_date");
 		
 		String partnerAcct = body.getString("from_account");	
-		String replenishmentsId = shipment.getString("replenishments_id");
-
+		String partner_biz_unit = body.getString("from_biz_unit");	
 		
+		String replenishmentsId = shipment.getString("replenishments_id");
+	
     	//当前操作人信息
     	JsonObject actor = ActionContextTransfomer.fromMessageHeaderToActor(msg.headers()); 
+    	
+		//按业务单元隔离
+		String bizUnit = msg.getCallContext().getString(CallContextSchema.BIZ_UNIT_ID);	
 		
 		this.queryLatestCDO(BizRoleDirection.TO, partnerAcct, appActivity.getBizObjectType(), replenishmentsId, null, next->{
 			if(next.succeeded()){
@@ -131,9 +136,10 @@ public class ReplenishmentRecordReceiptHandler extends CDOHandlerImpl<JsonObject
 			    								.put(rejectQuantityPath, accept_info.getValue("reject_quantity"))
 			    								.put(acceptCompletePath, true)
 			    								.put(actorQuantityPath, accept_info.getValue("accept_actor"))
-			    								.put(acceptDatePath, acceptDate);		
+			    								.put(acceptDatePath, acceptDate);	
+			    		
 		    		
-			    		this.updateCDO(null, null, BizRoleDirection.TO, partnerAcct, appActivity.getBizObjectType(), 
+			    		this.updateCDO(bizUnit, partner_biz_unit, BizRoleDirection.TO, partnerAcct, appActivity.getBizObjectType(), 
 			    				queryJs, updateJs, currentStatus, actor, cdoRet->{			    					
 			    					if(cdoRet.succeeded()){
 			    						
@@ -190,7 +196,7 @@ public class ReplenishmentRecordReceiptHandler extends CDOHandlerImpl<JsonObject
 	    		
 	    		if(isCompleted){
 	    			ReplenishmentCompleteHandler replenishmentCompleteHandler = new ReplenishmentCompleteHandler(this.appActivity);
-	    			replenishmentCompleteHandler.processComplete(replenishmentsId, partnerAcct, actor, ret->{
+	    			replenishmentCompleteHandler.processComplete(bizUnit, replenishmentsId, partnerAcct, actor, ret->{
 	    				
 	    				if (ret.succeeded()) {
 	    					msg.reply("ok");						

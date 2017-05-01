@@ -15,6 +15,7 @@ import otocloud.framework.app.common.BizRoleDirection;
 import otocloud.framework.app.function.ActionDescriptor;
 import otocloud.framework.app.function.AppActivityImpl;
 import otocloud.framework.app.function.CDOHandlerImpl;
+import otocloud.framework.common.CallContextSchema;
 import otocloud.framework.core.CommandMessage;
 import otocloud.framework.core.HandlerDescriptor;
 
@@ -57,11 +58,15 @@ public class ReplenishmentIncomingQueryHandler extends CDOHandlerImpl<JsonObject
 	public void handle(CommandMessage<JsonObject> msg) {
 
 		JsonObject queryParams = msg.getContent();
+		
+		//按业务单元隔离
+		String bizUnit = msg.getCallContext().getString(CallContextSchema.BIZ_UNIT_ID);		
+		
 		//PagingOptions pagingObj = PagingOptions.buildPagingOptions(queryParams);
 		JsonObject fields = queryParams.getJsonObject("fields");		
 		JsonObject queryCond = queryParams.getJsonObject("query");
 		JsonObject pagingInfo = queryParams.getJsonObject("paging");
-		this.queryLatestFactDataList(null, appActivity.getBizObjectType(), getStatus(queryParams), fields, pagingInfo, queryCond, null, findRet -> {
+		this.queryLatestFactDataList(bizUnit, appActivity.getBizObjectType(), getStatus(queryParams), fields, pagingInfo, queryCond, null, findRet -> {
 			if (findRet.succeeded()) {
 				//msg.reply(findRet.result());
 				JsonObject retObj = findRet.result();

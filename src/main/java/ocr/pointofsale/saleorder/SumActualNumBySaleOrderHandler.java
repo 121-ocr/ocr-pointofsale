@@ -8,6 +8,7 @@ import io.vertx.core.json.JsonObject;
 import ocr.common.handler.SampleBillBaseQueryHandler;
 import ocr.pointofsale.shift.ShiftConstant;
 import otocloud.framework.app.function.AppActivityImpl;
+import otocloud.framework.common.CallContextSchema;
 import otocloud.framework.core.CommandMessage;
 
 /**
@@ -27,6 +28,16 @@ public class SumActualNumBySaleOrderHandler extends SampleBillBaseQueryHandler {
 	@Override
 	public String getEventAddress() {
 		return ShiftConstant.QUERYSUM_ADDRESS;
+	}
+	
+	@Override
+	public String getBizUnit(CommandMessage<JsonObject> msg){
+/*		JsonObject session = msg.getSession();
+		boolean is_global_bu =  session.getBoolean(CallContextSchema.IS_GLOBAL_BU, true);
+*/		
+		//按业务单元隔离
+		String bizUnit = msg.getCallContext().getString(CallContextSchema.BIZ_UNIT_ID);		
+		return 	bizUnit;
 	}
 
 	@Override
