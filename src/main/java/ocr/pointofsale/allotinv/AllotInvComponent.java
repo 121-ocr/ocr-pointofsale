@@ -4,12 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import otocloud.framework.app.function.AppActivityImpl;
-import otocloud.framework.app.function.BizRoleDescriptor;
 import otocloud.framework.core.OtoCloudEventDescriptor;
 import otocloud.framework.core.OtoCloudEventHandlerRegistry;
 
 /**
- * 补货调拨入库单组件
+ * 补货入库单组件
  * @author wanghw
  *
  */
@@ -29,16 +28,6 @@ public class AllotInvComponent extends AppActivityImpl {
 		return "bp_allotinv";
 	}
 
-	//发布此业务活动关联的业务角色
-	@Override
-	public List<BizRoleDescriptor> exposeBizRolesDesc() {
-		// TODO Auto-generated method stub
-		BizRoleDescriptor bizRole = new BizRoleDescriptor("3", "门店渠道");
-		
-		List<BizRoleDescriptor> ret = new ArrayList<BizRoleDescriptor>();
-		ret.add(bizRole);
-		return ret;
-	}
 
 	//发布此业务活动对外暴露的业务事件
 	@Override

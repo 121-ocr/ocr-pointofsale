@@ -10,6 +10,8 @@ import otocloud.framework.app.function.ActionDescriptor;
 import otocloud.framework.app.function.AppActivityImpl;
 import otocloud.framework.app.function.BizRootType;
 import otocloud.framework.app.function.BizStateSwitchDesc;
+import otocloud.framework.common.CallContextSchema;
+import otocloud.framework.core.CommandMessage;
 import otocloud.framework.core.HandlerDescriptor;
 
 /**
@@ -27,6 +29,16 @@ public class ReturnBillCommitHandler extends SampleCDOBillBaseHandler{
 	@Override
 	public String getEventAddress() {
 		return ReturnBillConstant.COMMIT_ADDRESS;
+	}
+	
+	@Override
+	public String getBizUnit(CommandMessage<JsonObject> msg){
+/*		JsonObject session = msg.getSession();
+		boolean is_global_bu =  session.getBoolean(CallContextSchema.IS_GLOBAL_BU, true);
+*/		
+		//按业务单元隔离
+		String bizUnit = msg.getCallContext().getString(CallContextSchema.BIZ_UNIT_ID);		
+		return 	bizUnit;
 	}
 
 	/**

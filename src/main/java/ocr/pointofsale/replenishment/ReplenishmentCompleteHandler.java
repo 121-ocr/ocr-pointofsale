@@ -13,8 +13,9 @@ import otocloud.framework.app.function.AppActivityImpl;
 import otocloud.framework.app.function.BizRootType;
 import otocloud.framework.app.function.BizStateSwitchDesc;
 import otocloud.framework.app.function.CDOHandlerImpl;
+import otocloud.framework.common.CallContextSchema;
+import otocloud.framework.core.CommandMessage;
 import otocloud.framework.core.HandlerDescriptor;
-import otocloud.framework.core.OtoCloudBusMessage;
 
 /**
  * 补货单通知创建操作
@@ -60,15 +61,18 @@ public class ReplenishmentCompleteHandler extends CDOHandlerImpl<JsonObject> {
 	}
 
 	@Override
-	public void handle(OtoCloudBusMessage<JsonObject> msg) {
-		JsonObject bo = msg.body();
+	public void handle(CommandMessage<JsonObject> msg) {
+		JsonObject bo = msg.getContent();
 		
 		String boId = bo.getString("bo_id");
 		String partnerAcct = bo.getString("from_account");
 		
 		JsonObject actor = ActionContextTransfomer.fromMessageHeaderToActor(msg.headers()); 
 		
-		this.processComplete(boId, partnerAcct, actor, result->{
+		//按业务单元隔离
+		String bizUnit = msg.getCallContext().getString(CallContextSchema.BIZ_UNIT_ID);		
+		
+		this.processComplete(bizUnit, boId, partnerAcct, actor, result->{
 			if (result.succeeded()) {
 				msg.reply("ok");						
 			}else{
@@ -78,16 +82,17 @@ public class ReplenishmentCompleteHandler extends CDOHandlerImpl<JsonObject> {
     	});
 	}
 	
-	public void processComplete(String boId, String partnerAcct, JsonObject actor, Handler<AsyncResult<String>> ret){
+	public void processComplete(String bizUnit, String boId, String partnerAcct, JsonObject actor, Handler<AsyncResult<String>> ret){
 		
 		Future<String> retFuture = Future.future();
-		retFuture.setHandler(ret);
+		retFuture.setHandler(ret);		
+
 		
-		this.recordFactData(appActivity.getBizObjectType(), null,
+		this.recordFactData(bizUnit, appActivity.getBizObjectType(), null,
 				boId, actor, null, result->{
 			if (result.succeeded()) {				
 				
-				this.recordCDO(BizRoleDirection.TO, partnerAcct, appActivity.getBizObjectType(), 
+				this.recordCDO(bizUnit, BizRoleDirection.TO, partnerAcct, appActivity.getBizObjectType(), 
 				null, boId, actor, next->{
 					if (next.succeeded()) {			
 						retFuture.complete("ok");

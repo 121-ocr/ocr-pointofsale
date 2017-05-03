@@ -1,20 +1,22 @@
 package ocr.pointofsale.allotinv;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import io.vertx.core.CompositeFuture;
 import io.vertx.core.Future;
 import io.vertx.core.http.HttpMethod;
 import io.vertx.core.impl.CompositeFutureImpl;
 import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import otocloud.common.ActionURI;
 import otocloud.framework.app.function.ActionDescriptor;
 import otocloud.framework.app.function.ActionHandlerImpl;
 import otocloud.framework.app.function.AppActivityImpl;
 import otocloud.framework.app.function.BizRootType;
 import otocloud.framework.app.function.BizStateSwitchDesc;
+import otocloud.framework.core.CommandMessage;
 import otocloud.framework.core.HandlerDescriptor;
 import otocloud.framework.core.OtoCloudBusMessage;
 
@@ -39,10 +41,11 @@ public class AllotInvConfirmHandler extends ActionHandlerImpl<JsonObject> {
 	}
 
 	@Override
-	public void handle(OtoCloudBusMessage<JsonObject> msg) {
+	public void handle(CommandMessage<JsonObject> msg) {
+		
 		List<Future> futures = new ArrayList<>();
 		// 更新收货通知
-		JsonObject body = msg.body();
+		JsonObject body = msg.getContent();
 		JsonObject replenishment = body.getJsonObject("replenishment");
 		JsonObject shipment = body.getJsonObject("shipment");
 		JsonObject replenishmentBo = replenishment.getJsonObject("bo");
@@ -51,16 +54,16 @@ public class AllotInvConfirmHandler extends ActionHandlerImpl<JsonObject> {
 		//设置发货单完成状态
 		Future<JsonObject> acceptFuture = Future.future();
 		futures.add(acceptFuture);
-		completeShipment(shipment, acceptFuture);
+		completeShipment(msg, shipment, acceptFuture);
 		// 创建价格表
 		Future<JsonObject> priceFuture = Future.future();
 		futures.add(priceFuture);
-		createPrices(replenishmentBo, priceFuture);
+		createPrices(msg, replenishmentBo, priceFuture);
 		// 更新现存量
 		JsonArray invOnhand = getInvOnhandObject(shipmentBo);
 		Future<JsonObject> invOnhandFuture = Future.future();
 		futures.add(invOnhandFuture);
-		createInvOnhand(invOnhand, invOnhandFuture);
+		createInvOnhand(msg, invOnhand, invOnhandFuture);
 /*		// 更新发货单
 		Future<JsonObject> shipmentFuture = Future.future();
 		futures.add(shipmentFuture);
@@ -80,7 +83,7 @@ public class AllotInvConfirmHandler extends ActionHandlerImpl<JsonObject> {
 				}
 			}
 			// 更新补货单
-			updateReplenishment(shipment,msg);
+			updateReplenishment(msg, shipment,msg);
 		});
 	}
 
@@ -89,14 +92,14 @@ public class AllotInvConfirmHandler extends ActionHandlerImpl<JsonObject> {
 	 * @param shipment
 	 * @param shipmentFuture
 	 */
-	private void completeShipment(JsonObject shipment, Future<JsonObject> shipmentFuture) {
+	private void completeShipment(CommandMessage<JsonObject> cmd, JsonObject shipment, Future<JsonObject> shipmentFuture) {
 		String account = this.appActivity.getAppInstContext().getAccount();
 		String srvName = this.appActivity.getService().getRealServiceName();
 		/*String invSrvName = this.appActivity.getDependencies().getJsonObject("salescenter_service")
 				.getString("service_name", "");*/
-		String updateShipmentAddress = account + "." + srvName + "." + "shipment-mgr.complete";		
+		String updateShipmentAddress = account + "." + srvName + "." + "shipment-mgr.complete";
 		
-		this.appActivity.getEventBus().send(updateShipmentAddress, shipment, ret -> {
+		cmd.send(updateShipmentAddress, shipment, ret -> {
 			if (ret.succeeded()) {
 				shipmentFuture.complete();
 			} else {
@@ -114,12 +117,13 @@ public class AllotInvConfirmHandler extends ActionHandlerImpl<JsonObject> {
 	 * @param prices
 	 * @param invOnhandFuture
 	 */
-	private void createInvOnhand(JsonArray invOnhand, Future<JsonObject> invOnhandFuture) {
+	private void createInvOnhand(CommandMessage<JsonObject> cmd, JsonArray invOnhand, Future<JsonObject> invOnhandFuture) {
 		String from_account = this.appActivity.getAppInstContext().getAccount();
 		String invSrvName = this.appActivity.getDependencies().getJsonObject("inventorycenter_service")
 				.getString("service_name", "");
 		String getWarehouseAddress = from_account + "." + invSrvName + "." + "stockonhand-mgr.batchcreate";
-		this.appActivity.getEventBus().send(getWarehouseAddress, invOnhand, invRet -> {
+		
+		cmd.send(getWarehouseAddress, invOnhand, invRet -> {
 			if (invRet.succeeded()) {
 				invOnhandFuture.complete();
 			} else {
@@ -163,7 +167,7 @@ public class AllotInvConfirmHandler extends ActionHandlerImpl<JsonObject> {
 	}
 	
 	
-	private void createPrices(JsonObject replenishment, Future<JsonObject> priceFuture) {
+	private void createPrices(CommandMessage<JsonObject> cmd, JsonObject replenishment, Future<JsonObject> priceFuture) {
 		JsonArray details = replenishment.getJsonArray("details");
 		
 		String from_account = this.appActivity.getAppInstContext().getAccount();
@@ -188,9 +192,11 @@ public class AllotInvConfirmHandler extends ActionHandlerImpl<JsonObject> {
 			price.put("commission", detail_obj.getJsonObject("commission"));
 			
 			JsonObject params = new JsonObject().put("query", query)
-												.put("update", new JsonObject().put("$set", price));
+												.put("update", new JsonObject().put("$set", price));		
+
+			
 			// 创建门店价格表
-			this.appActivity.getEventBus().send(createPriceAddress, params, ret -> {
+			cmd.send(createPriceAddress, params, ret -> {
 				if (ret.succeeded()) {
 					//priceFuture.complete();
 				} else {
@@ -312,12 +318,15 @@ public class AllotInvConfirmHandler extends ActionHandlerImpl<JsonObject> {
 	 * @param msg
 	 * @param replenishmentFuture
 	 */
-	private void updateReplenishment(JsonObject shipment, OtoCloudBusMessage<JsonObject> msg) {
+	private void updateReplenishment(CommandMessage<JsonObject> cmd, JsonObject shipment, OtoCloudBusMessage<JsonObject> msg) {
 		String from_account = this.appActivity.getAppInstContext().getAccount();
 		String srvName = this.appActivity.getService().getRealServiceName();
 		String replenishmentAddress = from_account + "." + srvName + "." + "replenishment-mgr.record-receipt";
 
-		this.appActivity.getEventBus().send(replenishmentAddress, shipment, ret -> {
+/*		DeliveryOptions options = new DeliveryOptions();		
+		options.setHeaders(header);*/
+		
+		cmd.send(replenishmentAddress, shipment, ret -> {
 			if (ret.succeeded()) {
 				msg.reply(ret.result().body());
 			} else {

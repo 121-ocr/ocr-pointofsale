@@ -12,8 +12,9 @@ import otocloud.framework.app.function.AppActivityImpl;
 import otocloud.framework.app.function.BizRootType;
 import otocloud.framework.app.function.BizStateSwitchDesc;
 import otocloud.framework.app.function.CDOHandlerImpl;
+import otocloud.framework.common.CallContextSchema;
+import otocloud.framework.core.CommandMessage;
 import otocloud.framework.core.HandlerDescriptor;
-import otocloud.framework.core.OtoCloudBusMessage;
 
 /**
  * 发货单完成操作
@@ -58,10 +59,10 @@ public class ShipmentCompleteHandler extends CDOHandlerImpl<JsonObject> {
 	}
 
 	@Override
-	public void handle(OtoCloudBusMessage<JsonObject> msg) {
+	public void handle(CommandMessage<JsonObject> msg) {
 		MultiMap headerMap = msg.headers();
 		
-		JsonObject body = msg.body();
+		JsonObject body = msg.getContent();
 		JsonObject shipmentBo = body.getJsonObject("bo");
 		
     	String boId = body.getString("bo_id");
@@ -72,16 +73,18 @@ public class ShipmentCompleteHandler extends CDOHandlerImpl<JsonObject> {
     	//当前操作人信息
     	JsonObject actor = ActionContextTransfomer.fromMessageHeaderToActor(headerMap); 
     	
+		String bizUnit = msg.getCallContext().getString(CallContextSchema.BIZ_UNIT_ID);
+    	
     	   	
     	//记录事实对象（业务数据），会根据ActionDescriptor定义的状态机自动进行状态变化，并发出状态变化业务事件
     	//自动查找数据源，自动进行分表处理
-    	this.recordCDO(BizRoleDirection.TO, partnerAcct, appActivity.getBizObjectType(), shipmentBo, boId, actor, 
+    	this.recordCDO(bizUnit, BizRoleDirection.TO, partnerAcct, appActivity.getBizObjectType(), shipmentBo, boId, actor, 
     			cdoResult->{
     		if (cdoResult.succeeded()) {	
     			String stubBoId = shipmentBo.getString("bo_id");
     			JsonObject stubBo = this.buildStubForCDO(shipmentBo, stubBoId, partnerAcct);
     			
-    	    	this.recordFactData(appActivity.getBizObjectType(), stubBo, stubBoId, actor, null, result->{
+    	    	this.recordFactData(bizUnit, appActivity.getBizObjectType(), stubBo, stubBoId, actor, null, result->{
     				if (result.succeeded()) {				
     					msg.reply(shipmentBo);
     				} else {
@@ -97,9 +100,9 @@ public class ShipmentCompleteHandler extends CDOHandlerImpl<JsonObject> {
     			String scSrvName = this.appActivity.getDependencies().getJsonObject("salescenter_service")
     					.getString("service_name", "");
     			String scAddress = partnerAcct + "." + scSrvName + "." + "shipment.complete";
-    			DeliveryOptions options = new DeliveryOptions();
-    			options.setHeaders(headerMap);
-    			this.appActivity.getEventBus().send(scAddress, body, options, invRet -> {
+/*    			DeliveryOptions options = new DeliveryOptions();
+    			options.setHeaders(headerMap);*/
+    			msg.send(scAddress, body, invRet -> {
     				if (invRet.succeeded()) {
     					
     				} else {

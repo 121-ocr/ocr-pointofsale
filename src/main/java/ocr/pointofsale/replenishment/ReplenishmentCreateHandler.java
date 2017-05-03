@@ -6,8 +6,9 @@ import otocloud.common.ActionURI;
 import otocloud.framework.app.function.ActionDescriptor;
 import otocloud.framework.app.function.AppActivityImpl;
 import otocloud.framework.app.function.CDOHandlerImpl;
+import otocloud.framework.common.CallContextSchema;
+import otocloud.framework.core.CommandMessage;
 import otocloud.framework.core.HandlerDescriptor;
-import otocloud.framework.core.OtoCloudBusMessage;
 
 /**
  * 补货单通知创建操作
@@ -53,8 +54,8 @@ public class ReplenishmentCreateHandler extends CDOHandlerImpl<JsonObject> {
 	}
 
 	@Override
-	public void handle(OtoCloudBusMessage<JsonObject> msg) {
-		JsonObject bo = msg.body();
+	public void handle(CommandMessage<JsonObject> msg) {
+		JsonObject bo = msg.getContent();
 		
 		String stubBoId = bo.getString("bo_id");
 		String partnerAcct = bo.getString("from_account");
@@ -63,7 +64,10 @@ public class ReplenishmentCreateHandler extends CDOHandlerImpl<JsonObject> {
 		
 		String initState = bo.getString("current_state");
 		
-		recordFactData(appActivity.getBizObjectType(), stubBo, stubBoId, 
+		//按业务单元隔离
+		String bizUnit = msg.getCallContext().getString(CallContextSchema.BIZ_UNIT_ID);		
+		
+		recordFactData(bizUnit, appActivity.getBizObjectType(), stubBo, stubBoId, 
 				null, initState, true, false, actor, null, result->{
 			if (result.succeeded()) {				
 				msg.reply(stubBo);				

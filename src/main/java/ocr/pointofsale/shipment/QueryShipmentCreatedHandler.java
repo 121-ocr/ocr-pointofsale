@@ -1,21 +1,23 @@
 package ocr.pointofsale.shipment;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import io.vertx.core.CompositeFuture;
 import io.vertx.core.Future;
 import io.vertx.core.http.HttpMethod;
 import io.vertx.core.impl.CompositeFutureImpl;
 import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import otocloud.common.ActionURI;
 import otocloud.framework.app.common.BizRoleDirection;
 import otocloud.framework.app.function.ActionDescriptor;
 import otocloud.framework.app.function.AppActivityImpl;
 import otocloud.framework.app.function.CDOHandlerImpl;
+import otocloud.framework.common.CallContextSchema;
+import otocloud.framework.core.CommandMessage;
 import otocloud.framework.core.HandlerDescriptor;
-import otocloud.framework.core.OtoCloudBusMessage;
 
 /**
  * TODO: 待签收发货单查询
@@ -40,14 +42,16 @@ public class QueryShipmentCreatedHandler extends CDOHandlerImpl<JsonObject> {
 
 	//处理器
 	@Override
-	public void handle(OtoCloudBusMessage<JsonObject> msg) {
+	public void handle(CommandMessage<JsonObject> msg) {
 		
-		JsonObject queryParams = msg.body();
+		JsonObject queryParams = msg.getContent();
 		
 		List<String> statusList = new ArrayList<>();
 		statusList.add(ShipmentConstant.CREATE_STATUS);
+		
+		String bizUnit = msg.getCallContext().getString(CallContextSchema.BIZ_UNIT_ID);
 	    
-	    this.queryLatestFactDataList(appActivity.getBizObjectType(), statusList, null, queryParams, null, findRet->{
+	    this.queryLatestFactDataList(bizUnit, appActivity.getBizObjectType(), statusList, null, queryParams, null, findRet->{
 	        if (findRet.succeeded()) {
         	
 				//msg.reply(findRet.result());

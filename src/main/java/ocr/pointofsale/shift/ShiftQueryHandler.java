@@ -1,12 +1,14 @@
 package ocr.pointofsale.shift;
 
-import java.util.List;
-
 import io.vertx.core.json.JsonObject;
 import io.vertx.ext.mongo.FindOptions;
+
+import java.util.List;
+
 import ocr.common.handler.SampleBillBaseQueryHandler;
 import otocloud.framework.app.function.AppActivityImpl;
-import otocloud.framework.core.OtoCloudBusMessage;
+import otocloud.framework.common.CallContextSchema;
+import otocloud.framework.core.CommandMessage;
 
 /**
  * 
@@ -28,9 +30,13 @@ public class ShiftQueryHandler extends SampleBillBaseQueryHandler {
 	// 处理器
 	//根据条件查询交班信息
 	@Override
-	public void handle(OtoCloudBusMessage<JsonObject> msg) {
+	public void handle(CommandMessage<JsonObject> msg) {
 
-		JsonObject query = msg.body();
+		JsonObject query = msg.getContent();
+		
+		String bizUnit = msg.getCallContext().getString(CallContextSchema.BIZ_UNIT_ID);		
+		
+		query = this.buildQueryForMongo(query, bizUnit);
 		
 		appActivity.getAppDatasource().getMongoClient().findWithOptions(
 				appActivity.getDBTableName(this.appActivity.getBizObjectType()), query, new FindOptions(), findRet -> {

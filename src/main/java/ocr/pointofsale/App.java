@@ -27,7 +27,7 @@ public class App  extends AppServiceEngineImpl
 	}
 	
 	
-    public static void main( String[] args )
+/*    public static void main( String[] args )
     {
     	App app = new App();
 
@@ -35,6 +35,6 @@ public class App  extends AppServiceEngineImpl
     										"ocr-pointofsale.json", 
     										app);
     	
-    }   
+    }   */
 
 }
