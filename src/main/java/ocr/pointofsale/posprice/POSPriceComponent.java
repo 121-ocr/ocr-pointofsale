@@ -49,6 +49,9 @@ public class POSPriceComponent extends AppActivityImpl {
 		POSPriceQueryHandler priceQueryHandler = new POSPriceQueryHandler(this);
 		ret.add(priceQueryHandler);
 		
+		POSPriceQuery4POSHandler priceQuery4POSHandler = new POSPriceQuery4POSHandler(this);
+		ret.add(priceQuery4POSHandler);
+		
 		return ret;
 	}
 
