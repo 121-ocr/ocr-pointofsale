@@ -73,7 +73,7 @@ public class ShipmentCompleteHandler extends CDOHandlerImpl<JsonObject> {
     	//当前操作人信息
     	JsonObject actor = ActionContextTransfomer.fromMessageHeaderToActor(headerMap); 
     	
-		String bizUnit = msg.getCallContext().getString(CallContextSchema.BIZ_UNIT_ID);
+    	String bizUnit = msg.getCallContext().getLong(CallContextSchema.BIZ_UNIT_ID).toString();		
     	
     	   	
     	//记录事实对象（业务数据），会根据ActionDescriptor定义的状态机自动进行状态变化，并发出状态变化业务事件

@@ -70,7 +70,7 @@ public class ReplenishmentCompleteHandler extends CDOHandlerImpl<JsonObject> {
 		JsonObject actor = ActionContextTransfomer.fromMessageHeaderToActor(msg.headers()); 
 		
 		//按业务单元隔离
-		String bizUnit = msg.getCallContext().getString(CallContextSchema.BIZ_UNIT_ID);		
+		String bizUnit = msg.getCallContext().getLong(CallContextSchema.BIZ_UNIT_ID).toString();		
 		
 		this.processComplete(bizUnit, boId, partnerAcct, actor, result->{
 			if (result.succeeded()) {

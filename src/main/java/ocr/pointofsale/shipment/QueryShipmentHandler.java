@@ -49,7 +49,7 @@ public class QueryShipmentHandler extends CDOHandlerImpl<JsonObject> {
 		List<String> statusList = new ArrayList<>();
 		statusList.add(ShipmentConstant.CREATE_STATUS);
 		
-		String bizUnit = msg.getCallContext().getString(CallContextSchema.BIZ_UNIT_ID);
+		String bizUnit = msg.getCallContext().getLong(CallContextSchema.BIZ_UNIT_ID).toString();		
 	    
 	    this.queryLatestFactDataList(bizUnit, appActivity.getBizObjectType(), statusList, null, queryParams, null, findRet->{
 	        if (findRet.succeeded()) {

@@ -34,7 +34,7 @@ public class ShiftQueryHandler extends SampleBillBaseQueryHandler {
 
 		JsonObject query = msg.getContent();
 		
-		String bizUnit = msg.getCallContext().getString(CallContextSchema.BIZ_UNIT_ID);		
+		String bizUnit = msg.getCallContext().getLong(CallContextSchema.BIZ_UNIT_ID).toString();		
 		
 		query = this.buildQueryForMongo(query, bizUnit);
 		

@@ -76,7 +76,7 @@ public class ShipmentBatchCreateHandler extends CDOHandlerImpl<JsonArray> {
 	public void handle(CommandMessage<JsonArray> msg) {
 		JsonArray bos = msg.getContent();
 		
-		String bizUnit = msg.getCallContext().getString(CallContextSchema.BIZ_UNIT_ID);
+		String bizUnit = msg.getCallContext().getLong(CallContextSchema.BIZ_UNIT_ID).toString();		
 		
 		List<Future> futures = new ArrayList<Future>();
 		for(Object item: bos){

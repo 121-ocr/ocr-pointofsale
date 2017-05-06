@@ -60,7 +60,7 @@ public class ReplenishmentIncomingQueryHandler extends CDOHandlerImpl<JsonObject
 		JsonObject queryParams = msg.getContent();
 		
 		//按业务单元隔离
-		String bizUnit = msg.getCallContext().getString(CallContextSchema.BIZ_UNIT_ID);		
+		String bizUnit = msg.getCallContext().getLong(CallContextSchema.BIZ_UNIT_ID).toString();		
 		
 		//PagingOptions pagingObj = PagingOptions.buildPagingOptions(queryParams);
 		JsonObject fields = queryParams.getJsonObject("fields");		

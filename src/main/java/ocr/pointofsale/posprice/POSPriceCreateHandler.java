@@ -66,7 +66,7 @@ public class POSPriceCreateHandler extends ActionHandlerImpl<JsonObject> {
 		//String account = this.appActivity.getAppInstContext().getAccount();
 		
 		//按业务单元隔离
-		String bizUnit = msg.getCallContext().getString(CallContextSchema.BIZ_UNIT_ID);		
+		String bizUnit = msg.getCallContext().getLong(CallContextSchema.BIZ_UNIT_ID).toString();		
 		query = this.buildQueryForMongo(query, bizUnit);
 		
 		this.appActivity.getAppDatasource().getMongoClient().updateCollectionWithOptions(appActivity.getDBTableName(this.appActivity.getBizObjectType()), 

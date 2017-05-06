@@ -54,7 +54,7 @@ public class QueryShipmentCompletedHandler extends CDOHandlerImpl<JsonObject> {
 		JsonObject queryCond = queryParams.getJsonObject("query");
 		JsonObject pagingInfo = queryParams.getJsonObject("paging");
 		
-		String bizUnit = msg.getCallContext().getString(CallContextSchema.BIZ_UNIT_ID);		
+		String bizUnit = msg.getCallContext().getLong(CallContextSchema.BIZ_UNIT_ID).toString();		
 		
 		this.queryLatestFactDataList(bizUnit, appActivity.getBizObjectType(), statusList, fields, pagingInfo, queryCond, null, findRet -> {
 	        if (findRet.succeeded()) {

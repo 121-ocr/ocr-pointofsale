@@ -38,7 +38,7 @@ public class ShiftCreateHandler extends SampleBillBaseHandler {
 		boolean is_global_bu =  session.getBoolean(CallContextSchema.IS_GLOBAL_BU, true);
 */		
 		//按业务单元隔离
-		String bizUnit = msg.getCallContext().getString(CallContextSchema.BIZ_UNIT_ID);		
+		String bizUnit = msg.getCallContext().getLong(CallContextSchema.BIZ_UNIT_ID).toString();		
 		return 	bizUnit;
 	}
 
