@@ -8,6 +8,7 @@ import io.vertx.core.Future;
 import io.vertx.core.json.JsonObject;
 import ocr.common.handler.SampleDocQueryHandler;
 import otocloud.framework.app.function.AppActivityImpl;
+import otocloud.framework.core.CommandMessage;
 import otocloud.framework.core.OtoCloudBusMessage;
 
 /**
@@ -25,10 +26,10 @@ public class POSPriceQuery4POSHandler extends SampleDocQueryHandler {
 
 	// 处理器
 	@Override
-	public void handle(OtoCloudBusMessage<JsonObject> msg) {
+	public void handle(CommandMessage<JsonObject> msg) {
 		
 		String from_account = this.appActivity.getAppInstContext().getAccount();
-		JsonObject query = msg.body();
+		JsonObject query = msg.getContent();
 
 		appActivity.getAppDatasource().getMongoClient().find(appActivity.getDBTableName(appActivity.getBizObjectType()),
 				query,
